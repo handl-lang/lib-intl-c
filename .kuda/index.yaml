@@ -1,0 +1,19 @@
+name: lib-intl-c
+root: /home/luis/GitHub/handl-lang/lib-intl-c
+purpose: ''
+modules:
+- handl-lib-intl-c
+- lib-intl-c
+commands:
+- cargo check
+- cargo test --workspace
+provenance:
+  files:
+  - Cargo.toml
+  - src/lib.rs
+  hashes:
+  - aeb3b48b6bee3b47d786ae27c2b16fac086821bd
+  - 258cbdd7bc248996984038e28bd2df56860b4040
+  commit_sha: da9d818abfe472315ae28db7ee44ab073f7fd189
+  generated_at: '1792281225'
+  generator: kuda/0.1.0
