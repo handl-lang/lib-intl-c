@@ -34,23 +34,23 @@
 from "result" import { ok, err }
 from "bytes" import * as bytes
 
--- sdkgen-generated ICU4C adapters (libicui18n) — `from "../generated/..."
+-- sdkgen-generated ICU4C adapters (libicui18n) — `from "../handl-packages/generated/..."
 -- resolves by path under the file loader and basename-normalizes to the
 -- `ucol`/`unum`/... table modules under the stdlib chain.
-from "../generated/icu-c-linux-x86_64/ucol" import * as ucol
-from "../generated/icu-c-linux-x86_64/unum" import * as unum
-from "../generated/icu-c-linux-x86_64/upluralrules" import * as upluralrules
-from "../generated/icu-c-linux-x86_64/ureldatefmt" import * as ureldatefmt
-from "../generated/icu-c-linux-x86_64/udat" import * as udat
-from "../generated/icu-c-linux-x86_64/ufieldpositer" import * as ufieldpositer
-from "../generated/icu-c-linux-x86_64/unumberformatter" import * as unumf
-from "../generated/icu-c-linux-x86_64/uformattednumber" import * as ufnum
+from "../handl-packages/generated/icu-c-linux-x86_64/ucol" import * as ucol
+from "../handl-packages/generated/icu-c-linux-x86_64/unum" import * as unum
+from "../handl-packages/generated/icu-c-linux-x86_64/upluralrules" import * as upluralrules
+from "../handl-packages/generated/icu-c-linux-x86_64/ureldatefmt" import * as ureldatefmt
+from "../handl-packages/generated/icu-c-linux-x86_64/udat" import * as udat
+from "../handl-packages/generated/icu-c-linux-x86_64/ufieldpositer" import * as ufieldpositer
+from "../handl-packages/generated/icu-c-linux-x86_64/unumberformatter" import * as unumf
+from "../handl-packages/generated/icu-c-linux-x86_64/uformattednumber" import * as ufnum
 
 -- sdkgen-generated ICU4C adapters (libicuuc).
-from "../generated/icu-uc-c-linux-x86_64/ubrk" import * as ubrk
-from "../generated/icu-uc-c-linux-x86_64/uloc" import * as uloc
-from "../generated/icu-uc-c-linux-x86_64/uldnames" import * as uldnames
-from "../generated/icu-uc-c-linux-x86_64/ures" import * as ures
+from "../handl-packages/generated/icu-uc-c-linux-x86_64/ubrk" import * as ubrk
+from "../handl-packages/generated/icu-uc-c-linux-x86_64/uloc" import * as uloc
+from "../handl-packages/generated/icu-uc-c-linux-x86_64/uldnames" import * as uldnames
+from "../handl-packages/generated/icu-uc-c-linux-x86_64/ures" import * as ures
 
 -- NOTE: exports are intentionally untyped (`export f := ...`, not
 -- `export f: CompareStrings := ...`). The `hnl test` file-loader treats an
