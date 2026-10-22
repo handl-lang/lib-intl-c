@@ -1,19 +1,72 @@
 #!/usr/bin/env bash
 # hnl gate — `typecheck` + `lint` + `test` over this package's `.hnl` sources.
 #
-# Sources live in `src/` (one package per repo, ADR-0128 split). Nothing else
-# covers them — `cargo` never sees `.hnl`.
+# Committed sources live in `src/` (one package per repo, ADR-0128 split);
+# the generated port/adapter pairs are emitted under
+# `handl-packages/generated/` from the committed configs in `specs/` — a
+# gitignored build artifact this script regenerates first, so a fresh
+# checkout gates clean. Nothing else covers `.hnl` — `cargo` never sees
+# them.
 #
 # Usage:  HNL=../host-cli/target/debug/hnl scripts/hnl-gate.sh
 set -euo pipefail
 
 SRC_DIR="${SRC_DIR:-src}"
+GEN_DIR="${GEN_DIR:-handl-packages/generated}"
+SPEC_DIR="${SPEC_DIR:-specs}"
 HNL="${HNL:-../host-cli/target/debug/hnl}"
 if [ ! -x "$HNL" ]; then
   echo "error: no hnl binary at '$HNL'" >&2
   echo "       build it:   (cd ../host-cli && cargo build --bin hnl)" >&2
   exit 1
 fi
+
+# Resolve a system header to a real path — /usr/include on Arch/Fedora,
+# /usr/include/<triplet> on Debian/Ubuntu multiarch. Returns 1 when the
+# dev headers are not installed.
+resolve_header() {
+  for d in /usr/include "/usr/include/$(uname -m)-linux-gnu" /usr/local/include; do
+    [ -f "$d/$1" ] && { printf '%s\n' "$d/$1"; return 0; }
+  done
+  return 1
+}
+
+# Regenerate the port/adapter pairs from the committed configs first —
+# always re-emit so the gate covers the current spec, not a stale
+# artifact. One module per ICU header: the output file is named after the
+# header stem (`unicode/ucol.h` → `icu/ucol.hnl`) and `headers:` in the
+# config narrows by that basename. The `c` backend needs libclang (set
+# LIBCLANG_PATH when the loader cannot find it); a missing system header
+# skips that module's regen with a warning rather than failing the gate.
+# `icu` binds libicui18n (collation/formatting), `icu-uc` binds libicuuc
+# (break/normalize/locale).
+if [ -f "$SPEC_DIR/icu.sdkgen.yaml" ]; then
+  ICU_HEADERS="ucol.h unum.h upluralrules.h ureldatefmt.h udat.h \
+    ufieldpositer.h unumberformatter.h uformattednumber.h"
+  for rel in $ICU_HEADERS; do
+    echo "== hnl sdkgen c unicode/$rel --output $GEN_DIR/icu =="
+    if h=$(resolve_header "unicode/$rel"); then
+      "$HNL" sdkgen c "$h" --output "$GEN_DIR/icu" --config "$SPEC_DIR/icu.sdkgen.yaml"
+    else
+      echo "   warning: unicode/$rel not found — skipping (install icu dev headers)" >&2
+    fi
+  done
+fi
+
+if [ -f "$SPEC_DIR/icu-uc.sdkgen.yaml" ]; then
+  ICU_UC_HEADERS="ubrk.h uchar.h uldnames.h uloc.h unorm2.h ures.h ustring.h"
+  for rel in $ICU_UC_HEADERS; do
+    echo "== hnl sdkgen c unicode/$rel --output $GEN_DIR/icu-uc =="
+    if h=$(resolve_header "unicode/$rel"); then
+      "$HNL" sdkgen c "$h" --output "$GEN_DIR/icu-uc" --config "$SPEC_DIR/icu-uc.sdkgen.yaml"
+    else
+      echo "   warning: unicode/$rel not found — skipping (install icu dev headers)" >&2
+    fi
+  done
+fi
+
+scan_dirs=("$SRC_DIR")
+[ -d "$GEN_DIR" ] && scan_dirs+=("$GEN_DIR")
 
 # The corpus is mixed-dialect: canonical `.hnl` and arrow/contract `.hnl`
 # (`~>`, `cap`/`op`/`handl`/`tag` declarations, a leading `axiom`). The
@@ -60,10 +113,10 @@ while IFS= read -r f; do
   else
     skipped=$((skipped + 1))
   fi
-done < <(find "$SRC_DIR" -name '*.hnl' | sort)
+done < <(find "${scan_dirs[@]}" -name '*.hnl' | sort)
 
 if [ "${#sources[@]}" -eq 0 ] && [ "${#tests[@]}" -eq 0 ]; then
-  echo "only non-canonical (arrow/contract) sources under $SRC_DIR/ — gate skipped"
+  echo "only non-canonical (arrow/contract) sources under ${scan_dirs[*]}/ — gate skipped"
   exit 0
 fi
 
