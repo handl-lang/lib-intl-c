@@ -224,7 +224,10 @@ rd16 := (v) ~> utf16_dec(to_units(bytes.to_list(v.buf)), v.ret)
 nz := (v, d) ~> if v == null { d } else { v }
 
 -- options arg → record; non-record (null/string/number) degrades to {}
-opt_rec := (o) ~> if type.of(o) == "object" { o } else { {} }
+-- `type.of` reports a record's `type` field as its nominal tag (ADR-0154),
+-- so an opts record like `{ type: "disjunction" }` does not report
+-- "object" — detect the record shape structurally instead.
+opt_rec := (o) ~> match o { { }: o, _: {} }
 
 -- list / char-list helpers -----------------------------------------------------
 
