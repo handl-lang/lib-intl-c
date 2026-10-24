@@ -268,7 +268,7 @@ const SURFACES = [
         if (expected === undefined) continue;
         yield {
           name: `${testName("locale", c.id, i)}_${field}`,
-          expr: `tag.untag(intl_c.locale(${hnl(tag)}, null)).value.${field}`,
+          expr: `intl_c.locale(${hnl(tag)}, null).value.${field}`,
           expected,
         };
         i += 1;
@@ -356,7 +356,7 @@ for (const surface of SURFACES) {
     surface.inputs(c).forEach((input, i) => {
       const emitOne = (t, suffix) => {
         const name = t.name ?? testName(surface.key, c.id, i) + (suffix ?? "");
-        const expr = t.expr ?? `tag.untag(${t.call}).value`;
+        const expr = t.expr ?? `${t.call}.value`;
         emit(name, expr, t.expected, t);
       };
       try {

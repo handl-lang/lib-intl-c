@@ -8,44 +8,50 @@ from "./index" import * as intl_c
 -- probing -------------------------------------------------------------------
 
 -- `available` must be a well-defined bool either way.
+
+-- res_tag -- the `tag.tag_of` replacement for `ok`/`err` results
+-- (phase-3 WS-F nominal migration): dispatch is ctor-sym identity via
+-- `match` -- the `err`/`ok` arms cover both the canonical `__ctor__`
+-- mint and the host-minted `{"__tag__": ...}` envelope.
+res_tag :: r ~> match r { ok(_): "ok", err(_): "err", _: "?" }
 test_probe := assert(intl_c.available == true || intl_c.available == false) = true
 
 -- collation -----------------------------------------------------------------
 
 test_compare_less := assert(if intl_c.available {
-  tag.tag_of(intl_c.compare_strings("a", "b", null, null))
+  res_tag(intl_c.compare_strings("a", "b", null, null))
 } else {
   "ok"
 }) = "ok"
 
 test_compare_less_val := assert(if intl_c.available {
-  tag.untag(intl_c.compare_strings("a", "b", null, null)).value
+  intl_c.compare_strings("a", "b", null, null).value
 } else {
   -1
 }) = -1
 
 test_compare_equal := assert(if intl_c.available {
-  tag.untag(intl_c.compare_strings("abc", "abc", null, null)).value
+  intl_c.compare_strings("abc", "abc", null, null).value
 } else {
   0
 }) = 0
 
 test_compare_greater := assert(if intl_c.available {
-  tag.untag(intl_c.compare_strings("b", "a", null, null)).value
+  intl_c.compare_strings("b", "a", null, null).value
 } else {
   1
 }) = 1
 
 -- non-ASCII exercises the UTF-16 marshalling path
 test_compare_utf16 := assert(if intl_c.available {
-  tag.untag(intl_c.compare_strings("é", "z", "en", null)).value
+  intl_c.compare_strings("é", "z", "en", null).value
 } else {
   -1
 }) = -1
 
 -- sensitivity: "base" ignores accents (é == e at primary strength)
 test_compare_sensitivity_base := assert(if intl_c.available {
-  tag.untag(intl_c.compare_strings("é", "e", "en", { sensitivity: "base" })).value
+  intl_c.compare_strings("é", "e", "en", { sensitivity: "base" }).value
 } else {
   0
 }) = 0
@@ -53,26 +59,26 @@ test_compare_sensitivity_base := assert(if intl_c.available {
 -- number formatting ----------------------------------------------------------
 
 test_format_en := assert(if intl_c.available {
-  tag.untag(intl_c.format_number(1234.5, "en", null)).value
+  intl_c.format_number(1234.5, "en", null).value
 } else {
   "1,234.5"
 }) = "1,234.5"
 
 -- CLDR drift: pt-BR uses '.' grouping / ',' decimal in every shipped CLDR.
 test_format_pt_br := assert(if intl_c.available {
-  tag.untag(intl_c.format_number(1234.5, "pt-BR", null)).value
+  intl_c.format_number(1234.5, "pt-BR", null).value
 } else {
   "1.234,5"
 }) = "1.234,5"
 
 test_format_percent := assert(if intl_c.available {
-  tag.untag(intl_c.format_number(0.25, "en", { style: "percent" })).value
+  intl_c.format_number(0.25, "en", { style: "percent" }).value
 } else {
   "25%"
 }) = "25%"
 
 test_format_currency := assert(if intl_c.available {
-  tag.untag(intl_c.format_number(1234.5, "en", { style: "currency", currency: "EUR" })).value
+  intl_c.format_number(1234.5, "en", { style: "currency", currency: "EUR" }).value
 } else {
   "€1,234.50"
 }) = "€1,234.50"
@@ -80,7 +86,7 @@ test_format_currency := assert(if intl_c.available {
 -- parts: "1,234.5" splits into 5 spans, first is the leading integer run
 test_num_parts_type := assert(if intl_c.available {
   do {
-    p = tag.untag(intl_c.format_number_to_parts(1234.5, "en", null)).value
+    p = intl_c.format_number_to_parts(1234.5, "en", null).value
     match p { [h, ..._]: h.type, _: "?" }
   }
 } else {
@@ -89,7 +95,7 @@ test_num_parts_type := assert(if intl_c.available {
 
 test_num_parts_count := assert(if intl_c.available {
   do {
-    p = tag.untag(intl_c.format_number_to_parts(1234.5, "en", null)).value
+    p = intl_c.format_number_to_parts(1234.5, "en", null).value
     match p { [_, _, _, _, _]: 5, _: 0 }
   }
 } else {
@@ -99,13 +105,13 @@ test_num_parts_count := assert(if intl_c.available {
 -- plural selection -------------------------------------------------------------
 
 test_plural_one := assert(if intl_c.available {
-  tag.untag(intl_c.select_plural(1, "en", null)).value
+  intl_c.select_plural(1, "en", null).value
 } else {
   "one"
 }) = "one"
 
 test_plural_other := assert(if intl_c.available {
-  tag.untag(intl_c.select_plural(2, "en", null)).value
+  intl_c.select_plural(2, "en", null).value
 } else {
   "other"
 }) = "other"
@@ -113,13 +119,13 @@ test_plural_other := assert(if intl_c.available {
 -- list formatting --------------------------------------------------------------
 
 test_list_two := assert(if intl_c.available {
-  tag.untag(intl_c.format_list(["a", "b"], "en", null)).value
+  intl_c.format_list(["a", "b"], "en", null).value
 } else {
   "a and b"
 }) = "a and b"
 
 test_list_three := assert(if intl_c.available {
-  tag.untag(intl_c.format_list(["a", "b", "c"], "en", null)).value
+  intl_c.format_list(["a", "b", "c"], "en", null).value
 } else {
   "a, b, and c"
 }) = "a, b, and c"
@@ -127,20 +133,20 @@ test_list_three := assert(if intl_c.available {
 -- relative time ------------------------------------------------------------------
 
 test_rel_past := assert(if intl_c.available {
-  tag.untag(intl_c.format_relative_time(-3, "day", "en", null)).value
+  intl_c.format_relative_time(-3, "day", "en", null).value
 } else {
   "3 days ago"
 }) = "3 days ago"
 
 -- textual "yesterday" at -1 unless numeric: "always"
 test_rel_yesterday := assert(if intl_c.available {
-  tag.untag(intl_c.format_relative_time(-1, "day", "en", null)).value
+  intl_c.format_relative_time(-1, "day", "en", null).value
 } else {
   "yesterday"
 }) = "yesterday"
 
 test_rel_numeric := assert(if intl_c.available {
-  tag.untag(intl_c.format_relative_time(-1, "day", "en", { numeric: "always" })).value
+  intl_c.format_relative_time(-1, "day", "en", { numeric: "always" }).value
 } else {
   "1 day ago"
 }) = "1 day ago"
@@ -149,14 +155,14 @@ test_rel_numeric := assert(if intl_c.available {
 
 -- ISO string input parses via the handl civil→ms path; medium en date.
 test_date_iso := assert(if intl_c.available {
-  tag.untag(intl_c.format_date("2024-05-08", "en", { timeZone: "UTC" })).value
+  intl_c.format_date("2024-05-08", "en", { timeZone: "UTC" }).value
 } else {
   "May 8, 2024"
 }) = "May 8, 2024"
 
 -- epoch-ms input — 2024-05-08T00:00:00Z
 test_date_ms := assert(if intl_c.available {
-  tag.untag(intl_c.format_date(1715126400000, "en", { timeZone: "UTC" })).value
+  intl_c.format_date(1715126400000, "en", { timeZone: "UTC" }).value
 } else {
   "May 8, 2024"
 }) = "May 8, 2024"
@@ -164,7 +170,7 @@ test_date_ms := assert(if intl_c.available {
 -- "May 8, 2024" parts lead with the month field
 test_date_parts := assert(if intl_c.available {
   do {
-    p = tag.untag(intl_c.format_date_to_parts("2024-05-08", "en", { timeZone: "UTC" })).value
+    p = intl_c.format_date_to_parts("2024-05-08", "en", { timeZone: "UTC" }).value
     match p { [h, ..._]: h.type, _: "?" }
   }
 } else {
@@ -229,19 +235,19 @@ test_duration_ms_only := assert(if intl_c.available {
 }) = ok("0:00:00.5")
 
 test_duration_mixed_sign := assert(if intl_c.available {
-  tag.tag_of(intl_c.format_duration({ hours: 1, minutes: -30 }, "en", null))
+  res_tag(intl_c.format_duration({ hours: 1, minutes: -30 }, "en", null))
 } else {
   "err"
 }) = "err"
 
 test_duration_empty := assert(if intl_c.available {
-  tag.tag_of(intl_c.format_duration({}, "en", null))
+  res_tag(intl_c.format_duration({}, "en", null))
 } else {
   "err"
 }) = "err"
 
 test_duration_nonint := assert(if intl_c.available {
-  tag.tag_of(intl_c.format_duration({ hours: 1.5 }, "en", null))
+  res_tag(intl_c.format_duration({ hours: 1.5 }, "en", null))
 } else {
   "err"
 }) = "err"
@@ -255,14 +261,14 @@ test_duration_locale := assert(if intl_c.available {
 -- display names -----------------------------------------------------------------------
 
 test_display_language := assert(if intl_c.available {
-  tag.untag(intl_c.display_name("de", "language", "en", null)).value
+  intl_c.display_name("de", "language", "en", null).value
 } else {
   "German"
 }) = "German"
 
 -- "currency" is a unicode key → keyValueDisplayName
 test_display_currency := assert(if intl_c.available {
-  tag.untag(intl_c.display_name("USD", "currency", "en", null)).value
+  intl_c.display_name("USD", "currency", "en", null).value
 } else {
   "US Dollar"
 }) = "US Dollar"
@@ -272,7 +278,7 @@ test_display_currency := assert(if intl_c.available {
 -- "Hello!" splits into 6 grapheme segments starting with "H"
 test_segment_grapheme := assert(if intl_c.available {
   do {
-    s = tag.untag(intl_c.segment("Hello!", "grapheme", "en", null)).value
+    s = intl_c.segment("Hello!", "grapheme", "en", null).value
     match s { [h, _, _, _, _, _]: h.segment, _: "?" }
   }
 } else {
@@ -282,7 +288,7 @@ test_segment_grapheme := assert(if intl_c.available {
 -- word granularity marks word-likeness (space is not word-like)
 test_segment_word := assert(if intl_c.available {
   do {
-    s = tag.untag(intl_c.segment("a b", "word", "en", null)).value
+    s = intl_c.segment("a b", "word", "en", null).value
     match s { [_, w, ..._]: w.isWordLike, _: null }
   }
 } else {
@@ -292,7 +298,7 @@ test_segment_word := assert(if intl_c.available {
 -- astral (non-BMP) input exercises the surrogate-pair UTF-16 encode path
 test_segment_astral := assert(if intl_c.available {
   do {
-    s = tag.untag(intl_c.segment("a😀b", "grapheme", "en", null)).value
+    s = intl_c.segment("a😀b", "grapheme", "en", null).value
     match s { [_, m, _]: m.segment, _: "?" }
   }
 } else {
@@ -302,26 +308,26 @@ test_segment_astral := assert(if intl_c.available {
 -- locale utilities ------------------------------------------------------------------------
 
 test_locale_language := assert(if intl_c.available {
-  tag.untag(intl_c.locale("en-US", null)).value.language
+  intl_c.locale("en-US", null).value.language
 } else {
   "en"
 }) = "en"
 
 test_locale_region := assert(if intl_c.available {
-  tag.untag(intl_c.locale("en-US", null)).value.region
+  intl_c.locale("en-US", null).value.region
 } else {
   "US"
 }) = "US"
 
 test_canonical_single := assert(if intl_c.available {
-  tag.untag(intl_c.get_canonical_locales("EN_us")).value
+  intl_c.get_canonical_locales("EN_us").value
 } else {
   "en-US"
 }) = "en-US"
 
 -- "xx-YY" is not a real ICU locale → filtered out
 test_supported := assert(if intl_c.available {
-  tag.untag(intl_c.supported_locales_of(["en-US", "xx-YY"], null)).value
+  intl_c.supported_locales_of(["en-US", "xx-YY"], null).value
 } else {
   ["en-US"]
 }) = ["en-US"]
