@@ -1,7 +1,7 @@
 --- Generated adapter for icu-c-linux-x86_64/uformattednumber_c
 
 from "result" import { ok, err }
-from "../icu/uformattednumber" import { UnumfOpenResult78, UnumfResultToString78, UnumfCloseResult78 }
+from "../uformattednumber" import { UnumfOpenResult78, UnumfResultToString78, UnumfCloseResult78 }
 
 export unumf_openResult_78: UnumfOpenResult78 := (status) ~> do {
   r = ffi.call("libicui18n.so", "unumf_openResult_78", [status], ["io_scalar:i32"], "handle", false)

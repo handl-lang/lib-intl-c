@@ -1,7 +1,7 @@
 --- Generated adapter for icu-uc-c-linux-x86_64/uldnames_c
 
 from "result" import { ok, err }
-from "../icu-uc/uldnames" import { UldnOpen78, UldnClose78, UldnLocaleDisplayName78, UldnLanguageDisplayName78, UldnScriptDisplayName78, UldnRegionDisplayName78, UldnKeyDisplayName78, UldnKeyValueDisplayName78 }
+from "../uldnames" import { UldnOpen78, UldnClose78, UldnLocaleDisplayName78, UldnLanguageDisplayName78, UldnScriptDisplayName78, UldnRegionDisplayName78, UldnKeyDisplayName78, UldnKeyValueDisplayName78 }
 
 export uldn_open_78: UldnOpen78 := (locale, dialect, status) ~> do {
   r = ffi.call("libicuuc.so", "uldn_open_78", [locale, dialect, status], ["cstr", "i32", "io_scalar:i32"], "handle", false)

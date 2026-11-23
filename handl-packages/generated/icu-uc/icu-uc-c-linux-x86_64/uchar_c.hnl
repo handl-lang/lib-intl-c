@@ -1,7 +1,7 @@
 --- Generated adapter for icu-uc-c-linux-x86_64/uchar_c
 
 from "result" import { ok, err }
-from "../icu-uc/uchar" import { UHasBinaryProperty78, UGetIntPropertyValue78, UCharType78 }
+from "../uchar" import { UHasBinaryProperty78, UGetIntPropertyValue78, UCharType78 }
 
 export UCHAR_XID_CONTINUE: Int := 32
 export UCHAR_XID_START: Int := 33

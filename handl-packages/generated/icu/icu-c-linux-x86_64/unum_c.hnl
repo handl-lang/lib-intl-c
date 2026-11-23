@@ -1,7 +1,7 @@
 --- Generated adapter for icu-c-linux-x86_64/unum_c
 
 from "result" import { ok, err }
-from "../icu/unum" import { UnumOpen78, UnumClose78, UnumFormat78, UnumFormatInt6478, UnumFormatDouble78, UnumFormatDoubleForFields78, UnumFormatDecimal78, UnumGetAttribute78, UnumSetAttribute78, UnumSetTextAttribute78, UnumToPattern78, UnumGetSymbol78, UnumSetSymbol78, UnumGetLocaleByType78 }
+from "../unum" import { UnumOpen78, UnumClose78, UnumFormat78, UnumFormatInt6478, UnumFormatDouble78, UnumFormatDoubleForFields78, UnumFormatDecimal78, UnumGetAttribute78, UnumSetAttribute78, UnumSetTextAttribute78, UnumToPattern78, UnumGetSymbol78, UnumSetSymbol78, UnumGetLocaleByType78 }
 
 export unum_open_78: UnumOpen78 := (style, pattern, pattern_length, locale, parse_error, status) ~> do {
   r = ffi.call("libicui18n.so", "unum_open_78", [style, pattern, pattern_length, locale, parse_error, status], ["i32", "ptr", "i32", "cstr", "ptr", "io_scalar:i32"], "handle", false)

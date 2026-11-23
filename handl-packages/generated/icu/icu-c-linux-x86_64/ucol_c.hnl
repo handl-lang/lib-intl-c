@@ -1,7 +1,7 @@
 --- Generated adapter for icu-c-linux-x86_64/ucol_c
 
 from "result" import { ok, err }
-from "../icu/ucol" import { UcolOpen78, UcolOpenRules78, UcolClose78, UcolStrcoll78, UcolStrcollUtf878, UcolGreater78, UcolGreaterOrEqual78, UcolEqual78, UcolGetStrength78, UcolSetStrength78, UcolGetDisplayName78, UcolGetAvailable78, UcolCountAvailable78, UcolGetSortKey78, UcolSetAttribute78, UcolGetAttribute78, UcolGetLocaleByType78 }
+from "../ucol" import { UcolOpen78, UcolOpenRules78, UcolClose78, UcolStrcoll78, UcolStrcollUtf878, UcolGreater78, UcolGreaterOrEqual78, UcolEqual78, UcolGetStrength78, UcolSetStrength78, UcolGetDisplayName78, UcolGetAvailable78, UcolCountAvailable78, UcolGetSortKey78, UcolSetAttribute78, UcolGetAttribute78, UcolGetLocaleByType78 }
 
 export ucol_open_78: UcolOpen78 := (locale, status) ~> do {
   r = ffi.call("libicui18n.so", "ucol_open_78", [locale, status], ["cstr", "io_scalar:i32"], "handle", false)

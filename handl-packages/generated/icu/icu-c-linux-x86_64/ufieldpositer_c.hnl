@@ -1,7 +1,7 @@
 --- Generated adapter for icu-c-linux-x86_64/ufieldpositer_c
 
 from "result" import { ok, err }
-from "../icu/ufieldpositer" import { UfieldpositerOpen78, UfieldpositerClose78, UfieldpositerNext78 }
+from "../ufieldpositer" import { UfieldpositerOpen78, UfieldpositerClose78, UfieldpositerNext78 }
 
 export ufieldpositer_open_78: UfieldpositerOpen78 := (status) ~> do {
   r = ffi.call("libicui18n.so", "ufieldpositer_open_78", [status], ["io_scalar:i32"], "handle", false)

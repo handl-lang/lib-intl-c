@@ -1,7 +1,7 @@
 --- Generated adapter for icu-c-linux-x86_64/ureldatefmt_c
 
 from "result" import { ok, err }
-from "../icu/ureldatefmt" import { UreldatefmtOpen78, UreldatefmtClose78, UreldatefmtFormatNumeric78, UreldatefmtFormat78 }
+from "../ureldatefmt" import { UreldatefmtOpen78, UreldatefmtClose78, UreldatefmtFormatNumeric78, UreldatefmtFormat78 }
 
 export ureldatefmt_open_78: UreldatefmtOpen78 := (locale, nf_to_adopt, width, capitalization, status) ~> do {
   r = ffi.call("libicui18n.so", "ureldatefmt_open_78", [locale, nf_to_adopt, width, capitalization, status], ["cstr", "ptr", "i32", "i32", "io_scalar:i32"], "handle", false)

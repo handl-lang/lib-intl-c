@@ -1,7 +1,7 @@
 --- Generated adapter for icu-c-linux-x86_64/unumberformatter_c
 
 from "result" import { ok, err }
-from "../icu/unumberformatter" import { UnumfOpenForSkeletonAndLocale78, UnumfFormatDouble78, UnumfClose78 }
+from "../unumberformatter" import { UnumfOpenForSkeletonAndLocale78, UnumfFormatDouble78, UnumfClose78 }
 
 export unumf_openForSkeletonAndLocale_78: UnumfOpenForSkeletonAndLocale78 := (skeleton, skeleton_len, locale, status) ~> do {
   r = ffi.call("libicui18n.so", "unumf_openForSkeletonAndLocale_78", [skeleton, skeleton_len, locale, status], ["in_ptr", "i32", "cstr", "io_scalar:i32"], "handle", false)
