@@ -1,7 +1,7 @@
 # lib-intl-c
 
 `intl_c` — Handl Intl backend over ICU4C. The `icu` (libicui18n) and
-`icu-uc` (libicuuc) FFI bindings are sdkgen-generated and emitted under
+`icu-uc` (libicuuc) FFI bindings are codegen-generated and emitted under
 `handl-packages/generated/` (a gitignored build artifact).
 
 ## Layout
@@ -18,7 +18,7 @@ pkg.hnl     package manifest — modules, deps, description, license
 ```bash
 # one invocation per bound ICU header — see ICU_HEADERS / ICU_UC_HEADERS
 # in scripts/hnl-gate.sh
-hnl sdkgen c /usr/include/unicode/ucol.h \
+hnl codegen c /usr/include/unicode/ucol.h \
   --output handl-packages/generated/icu \
   --config specs/icu.sdkgen.yaml
 ```

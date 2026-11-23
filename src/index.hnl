@@ -1,7 +1,7 @@
 --- intl-c -- `intl` contract backend over the system ICU4C libraries.
 ---
 --- Implements the `intl.*` surface declared in `handl-packages/intl/intl.hnl`
---- on the host's `libicui18n` + `libicuuc` via the sdkgen-generated bindings
+--- on the host's `libicui18n` + `libicuuc` via the codegen-generated bindings
 --- in `handl-packages/generated/icu/icu-c-linux-x86_64/` and
 --- `handl-packages/generated/icu-uc/icu-uc-c-linux-x86_64/` (produced by
 --- `generated/icu.sdkgen.yaml` / `generated/icu-uc.sdkgen.yaml`; regenerate
@@ -34,7 +34,7 @@
 from "result" import { ok, err }
 from "bytes" import * as bytes
 
--- sdkgen-generated ICU4C adapters (libicui18n) — `from "../handl-packages/generated/..."
+-- codegen-generated ICU4C adapters (libicui18n) — `from "../handl-packages/generated/..."
 -- resolves by path under the file loader and basename-normalizes to the
 -- `ucol_c`/`unum_c`/... table modules under the stdlib chain.
 from "../handl-packages/generated/icu/icu-c-linux-x86_64/ucol_c" import * as ucol
@@ -46,7 +46,7 @@ from "../handl-packages/generated/icu/icu-c-linux-x86_64/ufieldpositer_c" import
 from "../handl-packages/generated/icu/icu-c-linux-x86_64/unumberformatter_c" import * as unumf
 from "../handl-packages/generated/icu/icu-c-linux-x86_64/uformattednumber_c" import * as ufnum
 
--- sdkgen-generated ICU4C adapters (libicuuc).
+-- codegen-generated ICU4C adapters (libicuuc).
 from "../handl-packages/generated/icu-uc/icu-uc-c-linux-x86_64/ubrk_c" import * as ubrk
 from "../handl-packages/generated/icu-uc/icu-uc-c-linux-x86_64/uloc_c" import * as uloc
 from "../handl-packages/generated/icu-uc/icu-uc-c-linux-x86_64/uldnames_c" import * as uldnames

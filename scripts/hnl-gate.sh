@@ -44,9 +44,9 @@ if [ -f "$SPEC_DIR/icu.sdkgen.yaml" ]; then
   ICU_HEADERS="ucol.h unum.h upluralrules.h ureldatefmt.h udat.h \
     ufieldpositer.h unumberformatter.h uformattednumber.h"
   for rel in $ICU_HEADERS; do
-    echo "== hnl sdkgen c unicode/$rel --output $GEN_DIR/icu =="
+    echo "== hnl codegen c unicode/$rel --output $GEN_DIR/icu =="
     if h=$(resolve_header "unicode/$rel"); then
-      "$HNL" sdkgen c "$h" --output "$GEN_DIR/icu" --config "$SPEC_DIR/icu.sdkgen.yaml"
+      "$HNL" codegen c "$h" --output "$GEN_DIR/icu" --config "$SPEC_DIR/icu.sdkgen.yaml"
     else
       echo "   warning: unicode/$rel not found — skipping (install icu dev headers)" >&2
     fi
@@ -56,9 +56,9 @@ fi
 if [ -f "$SPEC_DIR/icu-uc.sdkgen.yaml" ]; then
   ICU_UC_HEADERS="ubrk.h uchar.h uldnames.h uloc.h unorm2.h ures.h ustring.h"
   for rel in $ICU_UC_HEADERS; do
-    echo "== hnl sdkgen c unicode/$rel --output $GEN_DIR/icu-uc =="
+    echo "== hnl codegen c unicode/$rel --output $GEN_DIR/icu-uc =="
     if h=$(resolve_header "unicode/$rel"); then
-      "$HNL" sdkgen c "$h" --output "$GEN_DIR/icu-uc" --config "$SPEC_DIR/icu-uc.sdkgen.yaml"
+      "$HNL" codegen c "$h" --output "$GEN_DIR/icu-uc" --config "$SPEC_DIR/icu-uc.sdkgen.yaml"
     else
       echo "   warning: unicode/$rel not found — skipping (install icu dev headers)" >&2
     fi
