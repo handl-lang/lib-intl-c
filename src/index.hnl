@@ -72,7 +72,7 @@ try_load := (name) ~> if is_ok(ffi.load(name)) { name } else { null }
 
 -- `stem` is e.g. "libicui18n.so"; probe the bare soname, then `stem.<major>`.
 find_lib := (stem) ~> do {
-  hit = try_load(stem)
+  hit := try_load(stem)
   if hit != null { hit } else {
     while { v: 99, found: null } {
       (v, found) ~> if found != null || v < 50 {
@@ -151,13 +151,13 @@ enc_cp := (cp) ~> if cp < 65536 {
 u8_step := (b, t, acc) ~> if b < 128 {
   { state: { bs: t, acc: [...acc, ...enc_cp(b)] } }
 } else if b < 224 {
-  s = u8_cp1(b, t)
+  s := u8_cp1(b, t)
   { state: { bs: s.rest, acc: [...acc, ...enc_cp(s.cp)] } }
 } else if b < 240 {
-  s = u8_cp2(b, t)
+  s := u8_cp2(b, t)
   { state: { bs: s.rest, acc: [...acc, ...enc_cp(s.cp)] } }
 } else {
-  s = u8_cp3(b, t)
+  s := u8_cp3(b, t)
   { state: { bs: s.rest, acc: [...acc, ...enc_cp(s.cp)] } }
 }
 
@@ -261,12 +261,12 @@ at := (xs, i) ~> match drop(xs, i) {
 
 -- unwrap a `{ret, buf, vals}` result into `ok v` / `err "<what> failed…"`.
 statused := (r, what) ~> do {
-  v = payload(r)
+  v := payload(r)
   if type.of(v) != "object" {
     err(what)
   } else {
-    vs = nz(v.vals, [])
-    st = nz(at(vs, list_len(vs) - 1), 0)
+    vs := nz(v.vals, [])
+    st := nz(at(vs, list_len(vs) - 1), 0)
     if st > 0 {
       err(what + " code " + type.to_string(st))
     } else {
@@ -298,8 +298,8 @@ uslice := (us, i, j) ~> take(drop(us, i), j - i)
 
 -- NUL-terminated cstr readback: bytes up to the first 0
 cstr_of := (buf) ~> do {
-  bs = bytes.to_list(buf)
-  i = while { i: 0 } {
+  bs := bytes.to_list(buf)
+  i := while { i: 0 } {
     (st) ~> if st.i >= list_len(bs) || at(bs, st.i) == 0 {
       { out: st.i }
     } else {
@@ -311,16 +311,16 @@ cstr_of := (buf) ~> do {
 
 -- string prefix test via char lists
 starts_with := (s, p) ~> do {
-  cs = char.chars(s)
-  ps = char.chars(p)
+  cs := char.chars(s)
+  ps := char.chars(p)
   if list_len(ps) > list_len(cs) { false } else { take(cs, list_len(ps)) == ps }
 }
 
 -- first index of `needle` in `s` (char units), or -1
 find_sub := (s, needle) ~> do {
-  cs = char.chars(s)
-  ns = char.chars(needle)
-  nn = list_len(ns)
+  cs := char.chars(s)
+  ns := char.chars(needle)
+  nn := list_len(ns)
   while { i: 0, hit: -1 } {
     (i, hit) ~> if hit >= 0 || i + nn > list_len(cs) {
       { out: hit }
@@ -332,8 +332,8 @@ find_sub := (s, needle) ~> do {
 
 -- replace the first occurrence of `needle` in `s` with `repl`
 sub_first := (s, needle, repl) ~> do {
-  cs = char.chars(s)
-  i = find_sub(s, needle)
+  cs := char.chars(s)
+  i := find_sub(s, needle)
   if i < 0 { s } else {
     char.from_chars([...take(cs, i), ...char.chars(repl), ...drop(cs, i + list_len(char.chars(needle)))])
   }
@@ -366,48 +366,48 @@ ndig := (cs, i, n) ~> while { j: 0, acc: 0 } {
 
 -- days since 1970-01-01 for a civil y/m/d (Hinnant's days_from_civil)
 days_from_civil := (y, m, d) ~> do {
-  yy = if m <= 2 { y - 1 } else { y }
-  era = if yy >= 0 { math.floor_div(yy, 400) } else { math.floor_div(yy - 399, 400) }
-  yoe = yy - era * 400
-  doy = math.floor_div(153 * (if m > 2 { m - 3 } else { m + 9 }) + 2, 5) + d - 1
-  doe = yoe * 365 + math.floor_div(yoe, 4) - math.floor_div(yoe, 100) + doy
+  yy := if m <= 2 { y - 1 } else { y }
+  era := if yy >= 0 { math.floor_div(yy, 400) } else { math.floor_div(yy - 399, 400) }
+  yoe := yy - era * 400
+  doy := math.floor_div(153 * (if m > 2 { m - 3 } else { m + 9 }) + 2, 5) + d - 1
+  doe := yoe * 365 + math.floor_div(yoe, 4) - math.floor_div(yoe, 100) + doy
   era * 146097 + doe - 719468
 }
 
 -- "YYYY-MM-DD[ T]HH:mm[:ss[.sss]][Z|±hh[:mm|mm]]" → epoch ms, or null.
 -- Strict digit positions; zone defaults to UTC; date-only → UTC midnight.
 parse_iso_ms := (s) ~> do {
-  cs = char.chars(s)
-  n = list_len(cs)
+  cs := char.chars(s)
+  n := list_len(cs)
   if n < 10 || at(cs, 4) != "-" || at(cs, 7) != "-" {
     null
   } else {
-    y = ndig(cs, 0, 4)
-    mo = ndig(cs, 5, 2)
-    d = ndig(cs, 8, 2)
+    y := ndig(cs, 0, 4)
+    mo := ndig(cs, 5, 2)
+    d := ndig(cs, 8, 2)
     -- first zone marker ('Z', '+', '-') at index ≥ 10; time ends there
-    zi = while { i: 10, z: -1 } {
+    zi := while { i: 10, z: -1 } {
       (i, z) ~> if z >= 0 || i >= n {
         { out: z }
       } else {
-        c = at(cs, i)
+        c := at(cs, i)
         { state: { i: i + 1, z: if c == "Z" || c == "+" || c == "-" { i } else { -1 } } }
       }
     }
-    tend = if zi < 0 { n } else { zi }
-    has_time = tend > 11 && (at(cs, 10) == "T" || at(cs, 10) == " ")
+    tend := if zi < 0 { n } else { zi }
+    has_time := tend > 11 && (at(cs, 10) == "T" || at(cs, 10) == " ")
     if has_time && (tend < 16 || at(cs, 13) != ":") {
       null
     } else {
-      hh = if has_time { ndig(cs, 11, 2) } else { 0 }
-      mm = if has_time { ndig(cs, 14, 2) } else { 0 }
-      ss = if has_time && tend >= 19 && at(cs, 16) == ":" { ndig(cs, 17, 2) } else { 0 }
-      fk = if has_time && tend > 20 && at(cs, 19) == "." { imin(3, tend - 20) } else { 0 }
-      fms = if fk == 0 { 0 } else { ndig(cs, 20, fk) * (if fk == 1 { 100 } else if fk == 2 { 10 } else { 1 }) }
-      off = if zi < 0 || at(cs, zi) == "Z" { 0 } else {
-        sgn = if at(cs, zi) == "-" { -1 } else { 1 }
-        oh = ndig(cs, zi + 1, 2)
-        om = if n >= zi + 6 && at(cs, zi + 3) == ":" { ndig(cs, zi + 4, 2) } else if n >= zi + 5 { ndig(cs, zi + 3, 2) } else { 0 }
+      hh := if has_time { ndig(cs, 11, 2) } else { 0 }
+      mm := if has_time { ndig(cs, 14, 2) } else { 0 }
+      ss := if has_time && tend >= 19 && at(cs, 16) == ":" { ndig(cs, 17, 2) } else { 0 }
+      fk := if has_time && tend > 20 && at(cs, 19) == "." { imin(3, tend - 20) } else { 0 }
+      fms := if fk == 0 { 0 } else { ndig(cs, 20, fk) * (if fk == 1 { 100 } else if fk == 2 { 10 } else { 1 }) }
+      off := if zi < 0 || at(cs, zi) == "Z" { 0 } else {
+        sgn := if at(cs, zi) == "-" { -1 } else { 1 }
+        oh := ndig(cs, zi + 1, 2)
+        om := if n >= zi + 6 && at(cs, zi + 3) == ":" { ndig(cs, zi + 4, 2) } else if n >= zi + 5 { ndig(cs, zi + 3, 2) } else { 0 }
         sgn * (oh * 60 + om) * 60000
       }
       days_from_civil(y, mo, d) * 86400000 + hh * 3600000 + mm * 60000 + ss * 1000 + fms - off
@@ -419,10 +419,10 @@ parse_iso_ms := (s) ~> do {
 
 -- `ucol_strcoll` → UCollationResult (-1/0/1); closes `coll` first.
 cmp_finish := (coll, a, b) ~> do {
-  ea = utf16_enc(a)
-  eb = utf16_enc(b)
-  rc = ucol.ucol_strcoll_78(coll, ea.bytes, ea.len, eb.bytes, eb.len)
-  _ = ucol.ucol_close_78(coll)
+  ea := utf16_enc(a)
+  eb := utf16_enc(b)
+  rc := ucol.ucol_strcoll_78(coll, ea.bytes, ea.len, eb.bytes, eb.len)
+  _ := ucol.ucol_close_78(coll)
   if is_err(rc) {
     err("ucol_strcoll failed")
   } else {
@@ -433,31 +433,31 @@ cmp_finish := (coll, a, b) ~> do {
 -- option attributes: sensitivity (UCOL_STRENGTH=5 + CASE_LEVEL=3 for "case"),
 -- caseFirst (UCOL_CASE_FIRST=2), numeric (UCOL_NUMERIC_COLLATION=7)
 cmp_attrs := (coll, o) ~> do {
-  _s = match o.sensitivity {
+  _s := match o.sensitivity {
     "base": ucol.ucol_setAttribute_78(coll, 5, 0, 0),
     "accent": ucol.ucol_setAttribute_78(coll, 5, 1, 0),
     "case": do {
-      _1 = ucol.ucol_setAttribute_78(coll, 5, 0, 0)
+      _1 := ucol.ucol_setAttribute_78(coll, 5, 0, 0)
       ucol.ucol_setAttribute_78(coll, 3, 17, 0)
     },
     _: ucol.ucol_setAttribute_78(coll, 5, 2, 0)
   }
-  _c = match o.caseFirst {
+  _c := match o.caseFirst {
     "upper": ucol.ucol_setAttribute_78(coll, 2, 25, 0),
     "lower": ucol.ucol_setAttribute_78(coll, 2, 24, 0),
     "false": ucol.ucol_setAttribute_78(coll, 2, 16, 0),
     _: 0
   }
-  _n = if nz(o.numeric, false) { ucol.ucol_setAttribute_78(coll, 7, 17, 0) } else { 0 }
+  _n := if nz(o.numeric, false) { ucol.ucol_setAttribute_78(coll, 7, 17, 0) } else { 0 }
   coll
 }
 
 cmp_open := (a, b, locale, opts) ~> do {
-  r = statused(ucol.ucol_open_78(loc_or_root(locale), 0), "ucol_open")
+  r := statused(ucol.ucol_open_78(loc_or_root(locale), 0), "ucol_open")
   if is_err(r) {
     r
   } else {
-    coll = cmp_attrs(r.value.ret, opt_rec(opts))
+    coll := cmp_attrs(r.value.ret, opt_rec(opts))
     cmp_finish(coll, a, b)
   }
 }
@@ -473,24 +473,24 @@ num_style := (o) ~> match o.style {
 -- option attributes after unum_open: currency code (UNUM_CURRENCY_CODE=5,
 -- UTF-16 text), fraction/integer digit limits, grouping off
 num_attrs := (fmt, o) ~> do {
-  _c = if o.currency == null { 0 } else { do {
-    e = utf16_enc(o.currency)
+  _c := if o.currency == null { 0 } else { do {
+    e := utf16_enc(o.currency)
     unum.unum_setTextAttribute_78(fmt, 5, e.bytes, e.len, 0)
   } }
-  _a = if o.minimumFractionDigits == null { 0 } else { unum.unum_setAttribute_78(fmt, 7, o.minimumFractionDigits, 0) }
-  _b = if o.maximumFractionDigits != null { unum.unum_setAttribute_78(fmt, 6, o.maximumFractionDigits, 0) } else if o.style == "scientific" { unum.unum_setAttribute_78(fmt, 6, 3, 0) } else { 0 }
+  _a := if o.minimumFractionDigits == null { 0 } else { unum.unum_setAttribute_78(fmt, 7, o.minimumFractionDigits, 0) }
+  _b := if o.maximumFractionDigits != null { unum.unum_setAttribute_78(fmt, 6, o.maximumFractionDigits, 0) } else if o.style == "scientific" { unum.unum_setAttribute_78(fmt, 6, 3, 0) } else { 0 }
   -- ECMA-402 rounds half away from zero ("1.2345" → "1.235"); ICU defaults
   -- to half-even. UNUM_ROUNDING_MODE=11, UNUM_ROUND_HALFUP=6.
-  _r = unum.unum_setAttribute_78(fmt, 11, 6, 0)
-  _d = if o.minimumIntegerDigits == null { 0 } else { unum.unum_setAttribute_78(fmt, 4, o.minimumIntegerDigits, 0) }
-  _e = if o.maximumIntegerDigits == null { 0 } else { unum.unum_setAttribute_78(fmt, 3, o.maximumIntegerDigits, 0) }
-  _g = if nz(o.useGrouping, true) { 0 } else { unum.unum_setAttribute_78(fmt, 1, 0, 0) }
+  _r := unum.unum_setAttribute_78(fmt, 11, 6, 0)
+  _d := if o.minimumIntegerDigits == null { 0 } else { unum.unum_setAttribute_78(fmt, 4, o.minimumIntegerDigits, 0) }
+  _e := if o.maximumIntegerDigits == null { 0 } else { unum.unum_setAttribute_78(fmt, 3, o.maximumIntegerDigits, 0) }
+  _g := if nz(o.useGrouping, true) { 0 } else { unum.unum_setAttribute_78(fmt, 1, 0, 0) }
   fmt
 }
 
 num_run := (fmt, n) ~> do {
-  r = statused(unum.unum_formatDouble_78(fmt, n, 256, 0, 0), "unum_formatDouble")
-  _ = unum.unum_close_78(fmt)
+  r := statused(unum.unum_formatDouble_78(fmt, n, 256, 0, 0), "unum_formatDouble")
+  _ := unum.unum_close_78(fmt)
   if is_err(r) { r } else { ok(rd16(r.value)) }
 }
 
@@ -507,7 +507,7 @@ num_part_type := (f, seg) ~> match f {
 -- walk UFieldPositionIterator until done (-1) → [{field, b, e}]
 iter_fields := (iter) ~> while { acc: [], done: false } {
   (acc, done) ~> if done { { out: acc } } else { do {
-    v = payload(ufieldpositer.ufieldpositer_next_78(iter, 0, 0))
+    v := payload(ufieldpositer.ufieldpositer_next_78(iter, 0, 0))
     if v == null || v.ret < 0 {
       { out: acc }
     } else {
@@ -522,7 +522,7 @@ field_at := (spans, i) ~> while { ss: spans, best: null, bw: 0 } {
   (ss, best, bw) ~> match ss {
     []: { out: best },
     [s, ...t]: do {
-      w = s.e - s.b
+      w := s.e - s.b
       if s.b <= i && i < s.e && (best == null || w < bw) {
         { state: { ss: t, best: s.field, bw: w } }
       } else {
@@ -533,7 +533,7 @@ field_at := (spans, i) ~> while { ss: spans, best: null, bw: 0 } {
 }
 
 emit_part := (units, f, a, b, namer) ~> if b <= a { null } else {
-  seg = utf16_dec(uslice(units, a, b), b - a)
+  seg := utf16_dec(uslice(units, a, b), b - a)
   { type: if f == null { "literal" } else { namer(f, seg) }, value: seg }
 }
 
@@ -543,32 +543,32 @@ emit_part := (units, f, a, b, namer) ~> if b <= a { null } else {
 -- runs become "literal".
 parts_fill := (units, len, spans, namer) ~> while { i: 0, cur: null, a0: 0, acc: [] } {
   (i, cur, a0, acc) ~> if i >= len {
-    p = emit_part(units, cur, a0, len, namer)
+    p := emit_part(units, cur, a0, len, namer)
     { out: if p == null { acc } else { [...acc, p] } }
   } else {
-    f = field_at(spans, i)
+    f := field_at(spans, i)
     if f == cur {
       { state: { i: i + 1, cur: cur, a0: a0, acc: acc } }
     } else {
-      p = emit_part(units, cur, a0, i, namer)
+      p := emit_part(units, cur, a0, i, namer)
       { state: { i: i + 1, cur: f, a0: i, acc: if p == null { acc } else { [...acc, p] } } }
     }
   }
 }
 
 num_parts_run := (fmt, n) ~> do {
-  fi = statused(ufieldpositer.ufieldpositer_open_78(0), "ufieldpositer_open")
+  fi := statused(ufieldpositer.ufieldpositer_open_78(0), "ufieldpositer_open")
   if is_err(fi) {
-    _ = unum.unum_close_78(fmt)
+    _ := unum.unum_close_78(fmt)
     fi
   } else {
-    iter = fi.value.ret
-    r = statused(unum.unum_formatDoubleForFields_78(fmt, n, 256, iter, 0), "unum_formatDoubleForFields")
-    spans = iter_fields(iter)
-    _1 = ufieldpositer.ufieldpositer_close_78(iter)
-    _2 = unum.unum_close_78(fmt)
+    iter := fi.value.ret
+    r := statused(unum.unum_formatDoubleForFields_78(fmt, n, 256, iter, 0), "unum_formatDoubleForFields")
+    spans := iter_fields(iter)
+    _1 := ufieldpositer.ufieldpositer_close_78(iter)
+    _2 := unum.unum_close_78(fmt)
     if is_err(r) { r } else {
-      v = r.value
+      v := r.value
       ok(parts_fill(to_units(bytes.to_list(v.buf)), v.ret, spans, num_part_type))
     }
   }
@@ -576,10 +576,10 @@ num_parts_run := (fmt, n) ~> do {
 
 -- `parts` picks formatDouble vs formatDoubleForFields
 num_with := (n, locale, opts, parts) ~> do {
-  o = opt_rec(opts)
-  r = statused(unum.unum_open_78(num_style(o), 0, 0, loc_or_root(locale), 0, 0), "unum_open")
+  o := opt_rec(opts)
+  r := statused(unum.unum_open_78(num_style(o), 0, 0, loc_or_root(locale), 0, 0), "unum_open")
   if is_err(r) { r } else {
-    fmt = num_attrs(r.value.ret, o)
+    fmt := num_attrs(r.value.ret, o)
     if parts { num_parts_run(fmt, n) } else { num_run(fmt, n) }
   }
 }
@@ -587,13 +587,13 @@ num_with := (n, locale, opts, parts) ~> do {
 -- plural selection -----------------------------------------------------------------
 
 select_plural_impl := (n, locale, opts) ~> do {
-  o = opt_rec(opts)
-  ptype = if o.type == "ordinal" { 1 } else { 0 }
-  r = statused(upluralrules.uplrules_openForType_78(loc_or_root(locale), ptype, 0), "uplrules_open")
+  o := opt_rec(opts)
+  ptype := if o.type == "ordinal" { 1 } else { 0 }
+  r := statused(upluralrules.uplrules_openForType_78(loc_or_root(locale), ptype, 0), "uplrules_open")
   if is_err(r) { r } else {
-    rules = r.value.ret
-    s = statused(upluralrules.uplrules_select_78(rules, n, 64, 0), "uplrules_select")
-    _ = upluralrules.uplrules_close_78(rules)
+    rules := r.value.ret
+    s := statused(upluralrules.uplrules_select_78(rules, n, 64, 0), "uplrules_select")
+    _ := upluralrules.uplrules_close_78(rules)
     if is_err(s) { s } else { ok(rd16(s.value)) }
   }
 }
@@ -607,20 +607,20 @@ rel_unit := (u) ~> match u {
 }
 
 format_relative_time_impl := (n, unit, locale, opts) ~> do {
-  o = opt_rec(opts)
-  u = rel_unit(unit)
+  o := opt_rec(opts)
+  u := rel_unit(unit)
   if u < 0 { err("unsupported relative-time unit: " + type.to_string(unit)) } else {
-    width = match o.style { "short": 1, "narrow": 2, _: 0 }
-    r = statused(ureldatefmt.ureldatefmt_open_78(loc_or_root(locale), 0, width, 256, 0), "ureldatefmt_open")
+    width := match o.style { "short": 1, "narrow": 2, _: 0 }
+    r := statused(ureldatefmt.ureldatefmt_open_78(loc_or_root(locale), 0, width, 256, 0), "ureldatefmt_open")
     if is_err(r) { r } else {
-      fmt = r.value.ret
-      f = if o.numeric == "always" {
+      fmt := r.value.ret
+      f := if o.numeric == "always" {
         ureldatefmt.ureldatefmt_formatNumeric_78(fmt, n, u, 256, 0)
       } else {
         ureldatefmt.ureldatefmt_format_78(fmt, n, u, 256, 0)
       }
-      s = statused(f, "ureldatefmt_format")
-      _ = ureldatefmt.ureldatefmt_close_78(fmt)
+      s := statused(f, "ureldatefmt_format")
+      _ := ureldatefmt.ureldatefmt_close_78(fmt)
       if is_err(s) { s } else { ok(rd16(s.value)) }
     }
   }
@@ -633,16 +633,16 @@ date_style_num := (v) ~> match v { "full": 0, "long": 1, "medium": 2, "short": 3
 
 -- {ds, ts} for udat_open; neither given → medium date, no time
 date_styles := (o) ~> do {
-  ds = date_style_num(o.dateStyle)
-  ts = date_style_num(o.timeStyle)
+  ds := date_style_num(o.dateStyle)
+  ts := date_style_num(o.timeStyle)
   if ds < 0 && ts < 0 { { ds: 2, ts: -1 } } else { { ds: ds, ts: ts } }
 }
 
 date_ms_of := (v) ~> if type.of(v) == "number" { v } else if type.of(v) == "string" { parse_iso_ms(v) } else { null }
 
 date_run := (fmt, ms) ~> do {
-  r = statused(udat.udat_format_78(fmt, ms, 256, 0, 0), "udat_format")
-  _ = udat.udat_close_78(fmt)
+  r := statused(udat.udat_format_78(fmt, ms, 256, 0, 0), "udat_format")
+  _ := udat.udat_close_78(fmt)
   if is_err(r) { r } else { ok(rd16(r.value)) }
 }
 
@@ -656,36 +656,36 @@ date_part_type := (f, _seg) ~> match f {
 }
 
 date_parts_run := (fmt, ms) ~> do {
-  fi = statused(ufieldpositer.ufieldpositer_open_78(0), "ufieldpositer_open")
+  fi := statused(ufieldpositer.ufieldpositer_open_78(0), "ufieldpositer_open")
   if is_err(fi) {
-    _ = udat.udat_close_78(fmt)
+    _ := udat.udat_close_78(fmt)
     fi
   } else {
-    iter = fi.value.ret
-    r = statused(udat.udat_formatForFields_78(fmt, ms, 256, iter, 0), "udat_formatForFields")
-    spans = iter_fields(iter)
-    _1 = ufieldpositer.ufieldpositer_close_78(iter)
-    _2 = udat.udat_close_78(fmt)
+    iter := fi.value.ret
+    r := statused(udat.udat_formatForFields_78(fmt, ms, 256, iter, 0), "udat_formatForFields")
+    spans := iter_fields(iter)
+    _1 := ufieldpositer.ufieldpositer_close_78(iter)
+    _2 := udat.udat_close_78(fmt)
     if is_err(r) { r } else {
-      v = r.value
+      v := r.value
       ok(parts_fill(to_units(bytes.to_list(v.buf)), v.ret, spans, date_part_type))
     }
   }
 }
 
 date_with := (v, locale, opts, parts) ~> do {
-  ms = date_ms_of(v)
+  ms := date_ms_of(v)
   if ms == null { err("unsupported date value: " + type.to_string(v)) } else {
-    o = opt_rec(opts)
-    st = date_styles(o)
-    tz = if o.timeZone == null {
+    o := opt_rec(opts)
+    st := date_styles(o)
+    tz := if o.timeZone == null {
       { bytes: bytes.from_list([]), len: 0 }
     } else {
       utf16_enc(o.timeZone)
     }
-    r = statused(udat.udat_open_78(st.ts, st.ds, loc_or_root(locale), tz.bytes, tz.len, 0, 0, 0), "udat_open")
+    r := statused(udat.udat_open_78(st.ts, st.ds, loc_or_root(locale), tz.bytes, tz.len, 0, 0, 0), "udat_open")
     if is_err(r) { r } else {
-      fmt = r.value.ret
+      fmt := r.value.ret
       if parts { date_parts_run(fmt, ms) } else { date_run(fmt, ms) }
     }
   }
@@ -696,7 +696,7 @@ date_with := (v, locale, opts, parts) ~> do {
 -- ECMA type "conjunction"|"disjunction"|"unit" → CLDR listPattern key
 -- ("standard"|"or"|"unit"); style "long"|"short"|"narrow" → ""|"-short"|"-narrow"
 listpat_key := (o) ~> do {
-  base = match o.type { "disjunction": "or", "unit": "unit", _: "standard" }
+  base := match o.type { "disjunction": "or", "unit": "unit", _: "standard" }
   base + match o.style { "short": "-short", "narrow": "-narrow", _: "" }
 }
 
@@ -713,46 +713,46 @@ res_child_fb := (parent, key, what) ~> statused(ok(ffi.call(
 
 -- read a string resource under `parent` at `key`; closes the child handle
 res_str := (parent, key) ~> do {
-  c = res_child_fb(parent, key, "ures_getByKey")
+  c := res_child_fb(parent, key, "ures_getByKey")
   if is_err(c) { c } else {
-    h = c.value.ret
-    s = statused(ures.ures_getUTF8String_78(h, 256, 1, 0), "ures_getUTF8String")
-    _ = ures.ures_close_78(h)
+    h := c.value.ret
+    s := statused(ures.ures_getUTF8String_78(h, 256, 1, 0), "ures_getUTF8String")
+    _ := ures.ures_close_78(h)
     if is_err(s) { s } else {
-      v = s.value
+      v := s.value
       ok(bytes.utf8_decode(bytes.from_list(take(bytes.to_list(v.buf), at(v.vals, 0)))))
     }
   }
 }
 
 list_patterns_key := (locale, key) ~> do {
-  r0 = statused(ures.ures_open_78(0, loc_or_root(locale), 0), "ures_open")
+  r0 := statused(ures.ures_open_78(0, loc_or_root(locale), 0), "ures_open")
   if is_err(r0) { r0 } else {
-    h0 = r0.value.ret
-    r1 = res_child(h0, "listPattern", "listPattern")
+    h0 := r0.value.ret
+    r1 := res_child(h0, "listPattern", "listPattern")
     if is_err(r1) {
-      _ = ures.ures_close_78(h0)
+      _ := ures.ures_close_78(h0)
       r1
     } else {
-      h1 = r1.value.ret
-      r2 = res_child(h1, key, "listPattern." + key)
+      h1 := r1.value.ret
+      r2 := res_child(h1, key, "listPattern." + key)
       if is_err(r2) {
-        _1 = ures.ures_close_78(h1)
-        _2 = ures.ures_close_78(h0)
+        _1 := ures.ures_close_78(h1)
+        _2 := ures.ures_close_78(h0)
         r2
       } else {
-        h2 = r2.value.ret
-        p_start = res_str(h2, "start")
-        p_mid = res_str(h2, "middle")
-        p_end = res_str(h2, "end")
-        p_two = res_str(h2, "2")
-        _1 = ures.ures_close_78(h2)
-        _2 = ures.ures_close_78(h1)
-        _3 = ures.ures_close_78(h0)
+        h2 := r2.value.ret
+        p_start := res_str(h2, "start")
+        p_mid := res_str(h2, "middle")
+        p_end := res_str(h2, "end")
+        p_two := res_str(h2, "2")
+        _1 := ures.ures_close_78(h2)
+        _2 := ures.ures_close_78(h1)
+        _3 := ures.ures_close_78(h0)
         -- `two` is the only required pattern; trimmed bundles may lack
         -- start/middle/end, which list_join then falls back to `two` for
         if is_err(p_two) { p_two } else {
-          pv = (p) ~> if is_err(p) { null } else { p.value }
+          pv := (p) ~> if is_err(p) { null } else { p.value }
           ok({
             start: pv(p_start), middle: pv(p_mid),
             end: pv(p_end), two: p_two.value
@@ -768,11 +768,11 @@ list_patterns := (locale, o) ~> list_patterns_key(locale, listpat_key(o))
 
 -- CLDR composition: n==1 → item; n==2 → "2"; else start(x0, middle…(end(x[n-2], x[n-1])))
 list_join := (xs, pats) ~> do {
-  n = list_len(xs)
+  n := list_len(xs)
   if n == 0 { "" } else if n == 1 { at(xs, 0) } else if n == 2 {
     fmt2(pats.two, at(xs, 0), at(xs, 1))
   } else {
-    tail = while { i: n - 3, acc: fmt2(nz(pats.end, pats.two), at(xs, n - 2), at(xs, n - 1)) } {
+    tail := while { i: n - 3, acc: fmt2(nz(pats.end, pats.two), at(xs, n - 2), at(xs, n - 1)) } {
       (i, acc) ~> if i < 1 {
         { out: acc }
       } else {
@@ -784,7 +784,7 @@ list_join := (xs, pats) ~> do {
 }
 
 format_list_impl := (items, locale, opts) ~> if type.of(items) == "array" {
-  p = list_patterns(locale, opt_rec(opts))
+  p := list_patterns(locale, opt_rec(opts))
   if is_err(p) { p } else { ok(list_join(items, p.value)) }
 } else {
   err("format_list expects a list of strings")
@@ -820,11 +820,11 @@ dur_vals := (o) ~> [nz(o.years, 0), nz(o.months, 0), nz(o.weeks, 0), nz(o.days, 
 -- number input = elapsed seconds (extension over spec records); decompose the
 -- magnitude into h/m/s so digital gives "1:01:01" and textual "1 hr, …"
 dur_of_num := (v) ~> do {
-  s = if v < 0 { -1 } else { 1 }
-  a = math.abs(v)
-  h = math.floor_div(a, 3600)
-  m = math.floor_div(a - h * 3600, 60)
-  r = [0, 0, 0, 0, s * h, s * m, s * (a - h * 3600 - m * 60), 0, 0, 0]
+  s := if v < 0 { -1 } else { 1 }
+  a := math.abs(v)
+  h := math.floor_div(a, 3600)
+  m := math.floor_div(a - h * 3600, 60)
+  r := [0, 0, 0, 0, s * h, s * m, s * (a - h * 3600 - m * 60), 0, 0, 0]
   r
 }
 
@@ -850,7 +850,7 @@ dur_sign_ok := (vs) ~> while { xs: vs, s: 0, ok_so_far: true } {
     match xs {
       []: { out: true },
       [h, ...t]: do {
-        sh = if h == 0 { 0 } else if h < 0 { -1 } else { 1 }
+        sh := if h == 0 { 0 } else if h < 0 { -1 } else { 1 }
         if(s != 0) && (sh != 0) && (sh != s) {
           { out: false }
         } else {
@@ -871,22 +871,22 @@ dur_width := (s) ~> match s {
 -- "measure-unit/duration-<unit> unit-width-<w>" skeleton → localized "N unit"
 -- ("1 hour", "5 hr", "9ns" — plural + number handled by the formatter)
 dur_unit_str := (resname, width, n, locale) ~> do {
-  skel = utf16_enc("measure-unit/" + resname + " unit-width-" + width)
-  r = statused(unumf.unumf_openForSkeletonAndLocale_78(skel.bytes, skel.len, loc_or_root(locale), 0), "unumf_open")
+  skel := utf16_enc("measure-unit/" + resname + " unit-width-" + width)
+  r := statused(unumf.unumf_openForSkeletonAndLocale_78(skel.bytes, skel.len, loc_or_root(locale), 0), "unumf_open")
   if is_err(r) { r } else {
-    fmt = r.value.ret
-    rr = statused(ufnum.unumf_openResult_78(0), "unumf_openResult")
+    fmt := r.value.ret
+    rr := statused(ufnum.unumf_openResult_78(0), "unumf_openResult")
     if is_err(rr) {
-      _ = unumf.unumf_close_78(fmt)
+      _ := unumf.unumf_close_78(fmt)
       rr
     } else {
-      res = rr.value.ret
-      f0 = statused(unumf.unumf_formatDouble_78(fmt, n, res, 0), "unumf_formatDouble")
-      s = if is_err(f0) { f0 } else {
+      res := rr.value.ret
+      f0 := statused(unumf.unumf_formatDouble_78(fmt, n, res, 0), "unumf_formatDouble")
+      s := if is_err(f0) { f0 } else {
         statused(ufnum.unumf_resultToString_78(res, 128, 0), "unumf_resultToString")
       }
-      _1 = ufnum.unumf_closeResult_78(res)
-      _2 = unumf.unumf_close_78(fmt)
+      _1 := ufnum.unumf_closeResult_78(res)
+      _2 := unumf.unumf_close_78(fmt)
       if is_err(s) { s } else { ok(rd16(s.value)) }
     }
   }
@@ -896,15 +896,15 @@ dur_unit_str := (resname, width, n, locale) ~> do {
 -- `zi` is a fallback unit index formatted at 0 when nothing was emitted
 -- (-1 = none)
 dur_units_str := (vals, locale, width, lo, hi, zi, acc0) ~> do {
-  res0 = while { i: lo, acc: acc0, bad: null } {
+  res0 := while { i: lo, acc: acc0, bad: null } {
     (i, acc, bad) ~> if(bad != null) || (i >= hi) {
       { out: if bad == null { ok(acc) } else { bad } }
     } else {
-      n = at(vals, i)
+      n := at(vals, i)
       if n == 0 {
         { state: { i: i + 1, acc: acc, bad: bad } }
       } else {
-        s = dur_unit_str(at(dur_unit_res, i), width, n, locale)
+        s := dur_unit_str(at(dur_unit_res, i), width, n, locale)
         if is_err(s) {
           { state: { i: i + 1, acc: acc, bad: s } }
         } else {
@@ -914,7 +914,7 @@ dur_units_str := (vals, locale, width, lo, hi, zi, acc0) ~> do {
     }
   }
   if(res_tag(res0) == "ok") && (list_len(res0.value) == 0) && (zi >= 0) {
-    z = dur_unit_str(at(dur_unit_res, zi), width, 0, locale)
+    z := dur_unit_str(at(dur_unit_res, zi), width, 0, locale)
     if is_err(z) { z } else { ok([z.value]) }
   } else {
     res0
@@ -924,7 +924,7 @@ dur_units_str := (vals, locale, width, lo, hi, zi, acc0) ~> do {
 -- duration join: `listPattern.unit` isn't present in every locale bundle —
 -- fall back through unit → unit-short → standard (+ narrow variants)
 dur_pats := (locale, list_style) ~> do {
-  keys = if list_style == "narrow" {
+  keys := if list_style == "narrow" {
     ["unit-narrow", "unit-short", "unit", "standard-narrow", "standard-short", "standard"]
   } else {
     ["unit", "unit-short", "standard", "unit-narrow", "standard-short", "standard-narrow"]
@@ -933,7 +933,7 @@ dur_pats := (locale, list_style) ~> do {
     (ks, hit) ~> if(hit != null) || (match ks { []: true, _: false }) {
       { out: hit }
     } else {
-      p = list_patterns_key(locale, at(ks, 0))
+      p := list_patterns_key(locale, at(ks, 0))
       if res_tag(p) == "ok" {
         { state: { ks: ks, hit: p } }
       } else {
@@ -945,7 +945,7 @@ dur_pats := (locale, list_style) ~> do {
 
 -- join unit strings with the CLDR `unit` list pattern for the style
 dur_join := (parts, locale, list_style) ~> do {
-  p = dur_pats(locale, list_style)
+  p := dur_pats(locale, list_style)
   if(is_err(p)) || (p == null) { err("listPattern") } else {
     ok(list_join(parts, p.value))
   }
@@ -956,29 +956,29 @@ dur_join := (parts, locale, list_style) ~> do {
 -- folded into the seconds fraction (fractionalDigits opt, else up-to-9
 -- trimmed). Negative durations sign the whole string.
 dur_digital := (vals, locale, o) ~> do {
-  neg = dur_sign(vals) < 0
-  vs = if neg { map_list(vals, (x) ~> math.abs(x)) } else { vals }
-  h = at(vs, 4)
-  m = at(vs, 5)
-  s = at(vs, 6)
-  frac = (s - math.trunc(s)) + math.div(at(vs, 7) * 1000000 + at(vs, 8) * 1000 + at(vs, 9), 1000000000)
-  secv = math.trunc(s) + frac
-  big = dur_units_str(vs, locale, "short", 0, 4, -1, [])
+  neg := dur_sign(vals) < 0
+  vs := if neg { map_list(vals, (x) ~> math.abs(x)) } else { vals }
+  h := at(vs, 4)
+  m := at(vs, 5)
+  s := at(vs, 6)
+  frac := (s - math.trunc(s)) + math.div(at(vs, 7) * 1000000 + at(vs, 8) * 1000 + at(vs, 9), 1000000000)
+  secv := math.trunc(s) + frac
+  big := dur_units_str(vs, locale, "short", 0, 4, -1, [])
   if is_err(big) { big } else {
-    bp = big.value
-    fd = o.fractionalDigits
-    fo = if fd == null {
+    bp := big.value
+    fd := o.fractionalDigits
+    fo := if fd == null {
       { minimumIntegerDigits: 2, maximumFractionDigits: 9, useGrouping: false }
     } else {
       { minimumIntegerDigits: 2, minimumFractionDigits: fd, maximumFractionDigits: fd, useGrouping: false }
     }
-    ss = payload(num_with(secv, locale, fo, false))
-    mm = payload(num_with(m, locale, { minimumIntegerDigits: 2, useGrouping: false }, false))
-    hh = payload(num_with(h, locale, { useGrouping: false }, false))
+    ss := payload(num_with(secv, locale, fo, false))
+    mm := payload(num_with(m, locale, { minimumIntegerDigits: 2, useGrouping: false }, false))
+    hh := payload(num_with(h, locale, { useGrouping: false }, false))
     if(ss == null) || (mm == null) || (hh == null) {
       err("unum_formatDouble")
     } else {
-      j = dur_join([...bp, hh + ":" + mm + ":" + ss], locale, "short")
+      j := dur_join([...bp, hh + ":" + mm + ":" + ss], locale, "short")
       if is_err(j) { j } else {
         ok(if neg { "-" + j.value } else { j.value })
       }
@@ -987,11 +987,11 @@ dur_digital := (vals, locale, o) ~> do {
 }
 
 format_duration_impl := (v, locale, opts) ~> do {
-  o = opt_rec(opts)
-  style = nz(o.style, "short")
-  vs = dur_vals_of(v)
-  fd = o.fractionalDigits
-  fd_ok = if fd == null { true } else if type.of(fd) != "number" { false } else {
+  o := opt_rec(opts)
+  style := nz(o.style, "short")
+  vs := dur_vals_of(v)
+  fd := o.fractionalDigits
+  fd_ok := if fd == null { true } else if type.of(fd) != "number" { false } else {
     math.is_integer(fd) && (fd >= 0) && (fd <= 9)
   }
   if(style != "digital") && (style != "long") && (style != "short") && (style != "narrow") {
@@ -1007,11 +1007,11 @@ format_duration_impl := (v, locale, opts) ~> do {
   } else {
     -- textual styles: nonzero units only; sign goes on the whole string
     -- ("-2 hr, 30 min"), an all-zero duration formats as ""
-    neg = dur_sign(vs) < 0
-    avs = if neg { map_list(vs, (x) ~> math.abs(x)) } else { vs }
-    r = dur_units_str(avs, locale, dur_width(style), 0, 10, -1, [])
+    neg := dur_sign(vs) < 0
+    avs := if neg { map_list(vs, (x) ~> math.abs(x)) } else { vs }
+    r := dur_units_str(avs, locale, dur_width(style), 0, 10, -1, [])
     if is_err(r) { r } else {
-      j = dur_join(r.value, locale, style)
+      j := dur_join(r.value, locale, style)
       if is_err(j) { j } else {
         ok(if neg { "-" + j.value } else { j.value })
       }
@@ -1031,13 +1031,13 @@ dname_ukey := (t) ~> match t {
 
 -- {k, v}: canonical ICU keyword + value for a unicode-extension code
 dname_kv := (uk, code) ~> do {
-  r = payload(statused(uloc.uloc_canonicalize_78("und-u-" + uk + "-" + code, 128, 0), "uloc_canonicalize"))
+  r := payload(statused(uloc.uloc_canonicalize_78("und-u-" + uk + "-" + code, 128, 0), "uloc_canonicalize"))
   if r == null { { k: uk, v: code } } else {
-    s = cstr_of(r.buf)
-    i = find_sub(s, "@")
-    j = find_sub(s, "=")
+    s := cstr_of(r.buf)
+    i := find_sub(s, "@")
+    j := find_sub(s, "=")
     if i < 0 || j < 0 { { k: uk, v: code } } else {
-      cs = char.chars(s)
+      cs := char.chars(s)
       {
         k: char.from_chars(take(drop(cs, i + 1), j - i - 1)),
         v: char.from_chars(drop(cs, j + 1))
@@ -1047,12 +1047,12 @@ dname_kv := (uk, code) ~> do {
 }
 
 display_name_impl := (code, name_type, locale, _opts) ~> do {
-  r = statused(uldnames.uldn_open_78(loc_or_root(locale), 0, 0), "uldn_open")
+  r := statused(uldnames.uldn_open_78(loc_or_root(locale), 0, 0), "uldn_open")
   if is_err(r) { r } else {
-    ldn = r.value.ret
-    uk = dname_ukey(name_type)
-    kv = if uk == null { { k: name_type, v: code } } else { dname_kv(uk, code) }
-    f = match name_type {
+    ldn := r.value.ret
+    uk := dname_ukey(name_type)
+    kv := if uk == null { { k: name_type, v: code } } else { dname_kv(uk, code) }
+    f := match name_type {
       "language": uldnames.uldn_languageDisplayName_78(ldn, code, 256, 0),
       "region": uldnames.uldn_regionDisplayName_78(ldn, code, 256, 0),
       "script": uldnames.uldn_scriptDisplayName_78(ldn, code, 256, 0),
@@ -1060,8 +1060,8 @@ display_name_impl := (code, name_type, locale, _opts) ~> do {
       "key": uldnames.uldn_keyDisplayName_78(ldn, code, 256, 0),
       _: uldnames.uldn_keyValueDisplayName_78(ldn, kv.k, kv.v, 256, 0)
     }
-    s = statused(f, "uldn_displayName")
-    _ = uldnames.uldn_close_78(ldn)
+    s := statused(f, "uldn_displayName")
+    _ := uldnames.uldn_close_78(ldn)
     if is_err(s) { s } else { ok(rd16(s.value)) }
   }
 }
@@ -1071,12 +1071,12 @@ display_name_impl := (code, name_type, locale, _opts) ~> do {
 seg_type := (g) ~> match g { "word": 1, "line": 2, "sentence": 3, _: 0 }
 
 brk_int := (r) ~> do {
-  v = payload(r)
+  v := payload(r)
   if v == null { -1 } else { v }
 }
 
 brk_status := (bi) ~> do {
-  v = payload(ubrk.ubrk_getRuleStatus_78(bi))
+  v := payload(ubrk.ubrk_getRuleStatus_78(bi))
   if v == null { 0 } else { v }
 }
 
@@ -1097,32 +1097,32 @@ libc_free := (p) ~> ffi.call("libc.so.6", "free", [p], ["ptr"], "void", false)
 libc_memcpy := (dst, src, n) ~> ffi.call("libc.so.6", "memcpy", [dst, src, n], ["ptr", "in_ptr", "i64"], "ptr", false)
 
 segment_impl := (text, granularity, locale, _opts) ~> do {
-  g = seg_type(granularity)
-  e = utf16_enc(text)
-  nb = e.len * 2
-  p = libc_malloc(nb)
+  g := seg_type(granularity)
+  e := utf16_enc(text)
+  nb := e.len * 2
+  p := libc_malloc(nb)
   if p == 0 { err("malloc failed") } else { do {
-    _m = libc_memcpy(p, e.bytes, nb)
-    r = statused(ubrk.ubrk_open_78(g, loc_or_root(locale), p, e.len, 0), "ubrk_open")
+    _m := libc_memcpy(p, e.bytes, nb)
+    r := statused(ubrk.ubrk_open_78(g, loc_or_root(locale), p, e.len, 0), "ubrk_open")
     if is_err(r) {
-      _f = libc_free(p)
+      _f := libc_free(p)
       r
     } else {
-      bi = r.value.ret
-      units = to_units(bytes.to_list(e.bytes))
-      segs = while { pos: brk_int(ubrk.ubrk_first_78(bi)), acc: [] } {
+      bi := r.value.ret
+      units := to_units(bytes.to_list(e.bytes))
+      segs := while { pos: brk_int(ubrk.ubrk_first_78(bi)), acc: [] } {
         (pos, acc) ~> if pos < 0 { { out: acc } } else { do {
-          nx = brk_int(ubrk.ubrk_next_78(bi))
+          nx := brk_int(ubrk.ubrk_next_78(bi))
           if nx < 0 {
             { out: acc }
           } else {
-            seg = utf16_dec(uslice(units, pos, nx), nx - pos)
+            seg := utf16_dec(uslice(units, pos, nx), nx - pos)
             { state: { pos: nx, acc: [...acc, seg_obj(pos, seg, brk_status(bi), g)] } }
           }
         } }
       }
-      _c = ubrk.ubrk_close_78(bi)
-      _f = libc_free(p)
+      _c := ubrk.ubrk_close_78(bi)
+      _f := libc_free(p)
       ok(segs)
     }
   } }
@@ -1132,19 +1132,19 @@ segment_impl := (text, granularity, locale, _opts) ~> do {
 
 -- component extraction; absent component → "" (empty cstr)
 loc_field := (lid, which) ~> do {
-  f = match which {
+  f := match which {
     "language": uloc.uloc_getLanguage_78(lid, 64, 0),
     "script": uloc.uloc_getScript_78(lid, 64, 0),
     "region": uloc.uloc_getCountry_78(lid, 64, 0),
     "variant": uloc.uloc_getVariant_78(lid, 64, 0),
     _: uloc.uloc_getName_78(lid, 128, 0)
   }
-  v = payload(f)
+  v := payload(f)
   if v == null { "" } else { cstr_of(v.buf) }
 }
 
 canon_tag := (lid) ~> do {
-  v = payload(uloc.uloc_toLanguageTag_78(lid, 128, 1, 0))
+  v := payload(uloc.uloc_toLanguageTag_78(lid, 128, 1, 0))
   if v == null { lid } else { cstr_of(v.buf) }
 }
 
@@ -1153,13 +1153,13 @@ canon_tag := (lid) ~> do {
 -- set U_MISSING_RESOURCE_ERROR (still an ok() Result) — `statused` folds
 -- that to null so absent aliases never yield a dangling 0 handle.
 alias_get := (a, kind, code) ~> do {
-  k = payload(statused(ures.ures_getByKey_78(a, kind, 0, 0), "alias"))
-  c = if k == null { null } else { payload(statused(ures.ures_getByKey_78(k.ret, code, 0, 0), "alias")) }
-  rp = if c == null { null } else { payload(statused(ures.ures_getByKey_78(c.ret, "replacement", 0, 0), "alias")) }
-  s = if rp == null { null } else { payload(statused(ures.ures_getUTF8String_78(rp.ret, 256, 1, 0), "alias")) }
-  _1 = if rp == null { 0 } else { ures.ures_close_78(rp.ret) }
-  _2 = if c == null { 0 } else { ures.ures_close_78(c.ret) }
-  _3 = if k == null { 0 } else { ures.ures_close_78(k.ret) }
+  k := payload(statused(ures.ures_getByKey_78(a, kind, 0, 0), "alias"))
+  c := if k == null { null } else { payload(statused(ures.ures_getByKey_78(k.ret, code, 0, 0), "alias")) }
+  rp := if c == null { null } else { payload(statused(ures.ures_getByKey_78(c.ret, "replacement", 0, 0), "alias")) }
+  s := if rp == null { null } else { payload(statused(ures.ures_getUTF8String_78(rp.ret, 256, 1, 0), "alias")) }
+  _1 := if rp == null { 0 } else { ures.ures_close_78(rp.ret) }
+  _2 := if c == null { 0 } else { ures.ures_close_78(c.ret) }
+  _3 := if k == null { 0 } else { ures.ures_close_78(k.ret) }
   if s == null { null } else { s.ret }
 }
 
@@ -1167,13 +1167,13 @@ alias_get := (a, kind, code) ~> do {
 -- with ures_openDirect (no fallback). `f` receives the alias table handle
 -- and returns the result; all handles are closed on the way out.
 with_aliases := (f) ~> do {
-  o = payload(statused(ures.ures_openDirect_78(0, "metadata", 0), "metadata"))
+  o := payload(statused(ures.ures_openDirect_78(0, "metadata", 0), "metadata"))
   if o == null { f(null) } else { do {
-    h0 = o.ret
-    a = payload(statused(ures.ures_getByKey_78(h0, "alias", 0, 0), "alias"))
-    r = f(if a == null { null } else { a.ret })
-    _1 = if a == null { 0 } else { ures.ures_close_78(a.ret) }
-    _2 = ures.ures_close_78(h0)
+    h0 := o.ret
+    a := payload(statused(ures.ures_getByKey_78(h0, "alias", 0, 0), "alias"))
+    r := f(if a == null { null } else { a.ret })
+    _1 := if a == null { 0 } else { ures.ures_close_78(a.ret) }
+    _2 := ures.ures_close_78(h0)
     r
   } }
 }
@@ -1181,7 +1181,7 @@ with_aliases := (f) ~> do {
 -- text up to the first space — territory replacements can be
 -- space-separated lists ("SU" → "RU AM AZ …"); ECMA-402 keeps the first
 first_word := (s) ~> do {
-  i = find_sub(s, " ")
+  i := find_sub(s, " ")
   if i < 0 { s } else { char.from_chars(take(char.chars(s), i)) }
 }
 
@@ -1190,16 +1190,16 @@ first_word := (s) ~> do {
 -- 2-3-alpha / 3-digit subtags after it ("BU"→"MM"). `@key=value`
 -- extension keywords pass through untouched.
 alias_lid := (lid) ~> do {
-  i = find_sub(lid, "@")
-  base = if i < 0 { lid } else { char.from_chars(take(char.chars(lid), i)) }
-  ext = if i < 0 { "" } else { char.from_chars(drop(char.chars(lid), i)) }
-  ps = str.split(base, "_")
-  aliased = with_aliases((a) ~> while { xs: ps, i: 0, acc: [] } {
+  i := find_sub(lid, "@")
+  base := if i < 0 { lid } else { char.from_chars(take(char.chars(lid), i)) }
+  ext := if i < 0 { "" } else { char.from_chars(drop(char.chars(lid), i)) }
+  ps := str.split(base, "_")
+  aliased := with_aliases((a) ~> while { xs: ps, i: 0, acc: [] } {
     (xs, i, acc) ~> match xs {
       []: { out: acc },
       [h, ...t]: do {
-        n = list_len(char.chars(h))
-        rep = if a == null { null }
+        n := list_len(char.chars(h))
+        rep := if a == null { null }
               else if i == 0 { alias_get(a, "language", h) }
               else if(n == 2 || n == 3) && str.is_alpha(h) || n == 3 && str.is_numeric(h) { alias_get(a, "territory", h) }
               else { null }
@@ -1217,22 +1217,22 @@ alias_lid := (lid) ~> do {
 -- alias_lid then applies CLDR subtag aliases ("cmn"→"zh") that
 -- canonicalize leaves alone.
 canon := (t) ~> do {
-  r = payload(uloc.uloc_forLanguageTag_78(str.replace(t, "_", "-"), 128, 0, 0))
+  r := payload(uloc.uloc_forLanguageTag_78(str.replace(t, "_", "-"), 128, 0, 0))
   if r == null { t } else {
-    lid = cstr_of(r.buf)
-    cl = payload(statused(uloc.uloc_canonicalize_78(lid, 128, 0), "uloc_canonicalize"))
+    lid := cstr_of(r.buf)
+    cl := payload(statused(uloc.uloc_canonicalize_78(lid, 128, 0), "uloc_canonicalize"))
     canon_tag(alias_lid(if cl == null { lid } else { cstr_of(cl.buf) }))
   }
 }
 
 locale_impl := (t, _opts) ~> do {
-  r = statused(uloc.uloc_forLanguageTag_78(str.replace(t, "_", "-"), 128, 0, 0), "uloc_forLanguageTag")
+  r := statused(uloc.uloc_forLanguageTag_78(str.replace(t, "_", "-"), 128, 0, 0), "uloc_forLanguageTag")
   if is_err(r) { r } else {
-    lid = cstr_of(r.value.buf)
-    cl = payload(statused(uloc.uloc_canonicalize_78(lid, 128, 0), "uloc_canonicalize"))
-    clid = alias_lid(if cl == null { lid } else { cstr_of(cl.buf) })
-    bi = find_sub(clid, "@")
-    base_lid = if bi < 0 { clid } else { char.from_chars(take(char.chars(clid), bi)) }
+    lid := cstr_of(r.value.buf)
+    cl := payload(statused(uloc.uloc_canonicalize_78(lid, 128, 0), "uloc_canonicalize"))
+    clid := alias_lid(if cl == null { lid } else { cstr_of(cl.buf) })
+    bi := find_sub(clid, "@")
+    base_lid := if bi < 0 { clid } else { char.from_chars(take(char.chars(clid), bi)) }
     ok({
       tag: t,
       locale_id: lid,
@@ -1258,10 +1258,10 @@ get_canonical_locales_impl := (v) ~> if type.of(v) == "array" {
 -- fallback chain, so the bundle's ACTUAL locale (ULOC_ACTUAL_LOCALE=0)
 -- equals `c` iff ICU carries data for `c` itself
 locale_data := (c) ~> do {
-  b = payload(statused(ures.ures_open_78(0, c, 0), "ures_open"))
+  b := payload(statused(ures.ures_open_78(0, c, 0), "ures_open"))
   if b == null { null } else {
-    a = payload(statused(ures.ures_getLocaleByType_78(b.ret, 0, 0), "ures_getLocaleByType"))
-    _ = ures.ures_close_78(b.ret)
+    a := payload(statused(ures.ures_getLocaleByType_78(b.ret, 0, 0), "ures_getLocaleByType"))
+    _ := ures.ures_close_78(b.ret)
     if a == null { null } else { a.ret }
   }
 }
@@ -1271,17 +1271,17 @@ locale_data := (c) ~> do {
 best_available := (req_us) ~> while { c: req_us } {
   (st) ~> if st.c == "" { { out: false } } else { do {
     if locale_data(st.c) == st.c { { out: true } } else { do {
-      p = payload(statused(uloc.uloc_getParent_78(st.c, 128, 0), "uloc_getParent"))
+      p := payload(statused(uloc.uloc_getParent_78(st.c, 128, 0), "uloc_getParent"))
       { state: { c: if p == null { "" } else { cstr_of(p.buf) } } }
     } }
   } }
 }
 
 supported_locales_of_impl := (requested, _opts) ~> do {
-  reqs = if type.of(requested) == "array" { requested } else if type.of(requested) == "string" { [requested] } else { null }
+  reqs := if type.of(requested) == "array" { requested } else if type.of(requested) == "string" { [requested] } else { null }
   if reqs == null { err("expected a locale tag or list of tags") } else {
-    canon_reqs = map_list(reqs, canon)
-    kept = while { xs: canon_reqs, acc: [] } {
+    canon_reqs := map_list(reqs, canon)
+    kept := while { xs: canon_reqs, acc: [] } {
       (xs, acc) ~> match xs {
         []: { out: acc },
         [h, ...t]: { state: { xs: t, acc: if best_available(sub_all(h, "-", "_")) && !list_has(acc, h) { [...acc, h] } else { acc } } }

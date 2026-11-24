@@ -16,16 +16,16 @@ export U_EA_FULLWIDTH: Int := 3
 export U_EA_WIDE: Int := 5
 
 export u_hasBinaryProperty_78: UHasBinaryProperty78 := (c, which) ~> do {
-  r = ffi.call("libicuuc.so", "u_hasBinaryProperty_78", [c, which], ["i32", "i32"], "i32", false)
+  r := ffi.call("libicuuc.so", "u_hasBinaryProperty_78", [c, which], ["i32", "i32"], "i32", false)
   ok(r)
 }
 
 export u_getIntPropertyValue_78: UGetIntPropertyValue78 := (c, which) ~> do {
-  r = ffi.call("libicuuc.so", "u_getIntPropertyValue_78", [c, which], ["i32", "i32"], "i32", false)
+  r := ffi.call("libicuuc.so", "u_getIntPropertyValue_78", [c, which], ["i32", "i32"], "i32", false)
   ok(r)
 }
 
 export u_charType_78: UCharType78 := (c) ~> do {
-  r = ffi.call("libicuuc.so", "u_charType_78", [c], ["i32"], "i32", false)
+  r := ffi.call("libicuuc.so", "u_charType_78", [c], ["i32"], "i32", false)
   ok(r)
 }
