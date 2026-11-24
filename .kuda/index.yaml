@@ -1,19 +1,14 @@
 name: lib-intl-c
 root: /home/luis/GitHub/handl-lang/lib-intl-c
-purpose: ''
-modules:
-- handl-lib-intl-c
-- lib-intl-c
-commands:
-- cargo check
-- cargo test --workspace
+purpose: '`intl_c` — Handl Intl backend over ICU4C. The `icu` (libicui18n) and'
+modules: []
+commands: []
+tree_digest: da39a3ee5e6b4b0d3255bfef95601890afd80709
 provenance:
   files:
-  - Cargo.toml
-  - src/lib.rs
+  - README.md
   hashes:
-  - aeb3b48b6bee3b47d786ae27c2b16fac086821bd
-  - 258cbdd7bc248996984038e28bd2df56860b4040
-  commit_sha: da9d818abfe472315ae28db7ee44ab073f7fd189
-  generated_at: '1792281225'
+  - 5b4e71e324c4a84b92358bf2a43c6ee8054c599e
+  commit_sha: 89d911a4777e2f9135bc5e4d211e7d7a415e8707
+  generated_at: '1795484421'
   generator: kuda/0.1.0
