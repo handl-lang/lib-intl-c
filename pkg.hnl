@@ -1,1 +1,1 @@
-{ modules: ["intl_c"], description: "Handl Intl backend over ICU4C.", license: "MIT" }
+{ modules: ["intl_c"], name: "intl-c", description: "Handl Intl backend over ICU4C.", license: "MIT" }
