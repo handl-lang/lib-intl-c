@@ -36,14 +36,14 @@ export UdatOpen78Result := {
 }
 
 --- ffi:
-export UdatOpen78: (Int, Int, String, Bytes, Int, Int, Int, Int) ~[1]~> Result<UdatOpen78Result, Errno>
+export UdatOpen78: (Int, Int, String, Bytes, Int, Int, Int, Int) ~>[1] Result<UdatOpen78Result, Errno>
 
 --- Close a UDateFormat.
 --- Once closed, a UDateFormat may no longer be used.
 --- format: The formatter to close.
 --- @stable ICU 2.0
 --- ffi:
-export UdatClose78: (Handle) ~[1]~> Result<Int, Errno>
+export UdatClose78: (Handle) ~>[1] Result<Int, Errno>
 
 --- Format a date using a UDateFormat.
 --- The date will be formatted using the conventions specified in {@link #udat_open }
@@ -69,7 +69,7 @@ export UdatFormat78Result := {
 }
 
 --- ffi:
-export UdatFormat78: (Handle, Float, Int, Int, Int) ~[1]~> Result<UdatFormat78Result, Errno>
+export UdatFormat78: (Handle, Float, Int, Int, Int) ~>[1] Result<UdatFormat78Result, Errno>
 
 --- Format a date using a UDateFormat.
 --- The date will be formatted using the conventions specified in {@link #udat_open}
@@ -104,7 +104,7 @@ export UdatFormatForFields78Result := {
 }
 
 --- ffi:
-export UdatFormatForFields78: (Handle, Float, Int, Handle, Int) ~[1]~> Result<UdatFormatForFields78Result, Errno>
+export UdatFormatForFields78: (Handle, Float, Int, Handle, Int) ~>[1] Result<UdatFormatForFields78Result, Errno>
 
 --- Parse a string into an date/time using a UDateFormat.
 --- The date will be parsed using the conventions specified in {@link #udat_open }.
@@ -134,4 +134,4 @@ export UdatParse78Result := {
 }
 
 --- ffi:
-export UdatParse78: (Handle, Bytes, Int, Int, Int) ~[1]~> Result<UdatParse78Result, Errno>
+export UdatParse78: (Handle, Bytes, Int, Int, Int) ~>[1] Result<UdatParse78Result, Errno>

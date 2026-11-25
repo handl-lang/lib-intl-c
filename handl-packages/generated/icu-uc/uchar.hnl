@@ -53,7 +53,7 @@ export U_EA_WIDE: Int
 --- See: u_getUnicodeVersion
 --- @stable ICU 2.1
 --- ffi: UBool (UChar32, UProperty)
-export UHasBinaryProperty78: (Int, Int) ~[1]~> Result<Int, Errno>
+export UHasBinaryProperty78: (Int, Int) ~>[1] Result<Int, Errno>
 
 --- Get the property value for an enumerated or integer Unicode property for a code point.
 --- Also returns binary and mask property values.
@@ -87,7 +87,7 @@ export UHasBinaryProperty78: (Int, Int) ~[1]~> Result<Int, Errno>
 --- See: u_getUnicodeVersion
 --- @stable ICU 2.2
 --- ffi: int32_t (UChar32, UProperty)
-export UGetIntPropertyValue78: (Int, Int) ~[1]~> Result<Int, Errno>
+export UGetIntPropertyValue78: (Int, Int) ~>[1] Result<Int, Errno>
 
 --- Returns the general category value for the code point.
 --- Same as java.lang.Character.getType().
@@ -96,4 +96,4 @@ export UGetIntPropertyValue78: (Int, Int) ~[1]~> Result<Int, Errno>
 --- See: UCharCategory
 --- @stable ICU 2.0
 --- ffi: int8_t (UChar32)
-export UCharType78: (Int) ~[1]~> Result<Int, Errno>
+export UCharType78: (Int) ~>[1] Result<Int, Errno>

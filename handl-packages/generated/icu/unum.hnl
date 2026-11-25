@@ -43,14 +43,14 @@ export UnumOpen78Result := {
 }
 
 --- ffi:
-export UnumOpen78: (Int, Int, Int, String, Int, Int) ~[1]~> Result<UnumOpen78Result, Errno>
+export UnumOpen78: (Int, Int, Int, String, Int, Int) ~>[1] Result<UnumOpen78Result, Errno>
 
 --- Close a UNumberFormat.
 --- Once closed, a UNumberFormat may no longer be used.
 --- fmt: The formatter to close.
 --- @stable ICU 2.0
 --- ffi:
-export UnumClose78: (Handle) ~[1]~> Result<Int, Errno>
+export UnumClose78: (Handle) ~>[1] Result<Int, Errno>
 
 --- Format an integer using a UNumberFormat.
 --- The integer will be formatted according to the UNumberFormat's locale.
@@ -82,7 +82,7 @@ export UnumFormat78Result := {
 }
 
 --- ffi:
-export UnumFormat78: (Handle, Int, Int, Int, Int) ~[1]~> Result<UnumFormat78Result, Errno>
+export UnumFormat78: (Handle, Int, Int, Int, Int) ~>[1] Result<UnumFormat78Result, Errno>
 
 --- Format an int64 using a UNumberFormat.
 --- The int64 will be formatted according to the UNumberFormat's locale.
@@ -114,7 +114,7 @@ export UnumFormatInt6478Result := {
 }
 
 --- ffi:
-export UnumFormatInt6478: (Handle, Int, Int, Int, Int) ~[1]~> Result<UnumFormatInt6478Result, Errno>
+export UnumFormatInt6478: (Handle, Int, Int, Int, Int) ~>[1] Result<UnumFormatInt6478Result, Errno>
 
 --- Format a double using a UNumberFormat.
 --- The double will be formatted according to the UNumberFormat's locale.
@@ -146,7 +146,7 @@ export UnumFormatDouble78Result := {
 }
 
 --- ffi:
-export UnumFormatDouble78: (Handle, Float, Int, Int, Int) ~[1]~> Result<UnumFormatDouble78Result, Errno>
+export UnumFormatDouble78: (Handle, Float, Int, Int, Int) ~>[1] Result<UnumFormatDouble78Result, Errno>
 
 --- Format a double using a UNumberFormat according to the UNumberFormat's locale,
 --- and initialize a UFieldPositionIterator that enumerates the subcomponents of
@@ -195,7 +195,7 @@ export UnumFormatDoubleForFields78Result := {
 }
 
 --- ffi:
-export UnumFormatDoubleForFields78: (Handle, Float, Int, Handle, Int) ~[1]~> Result<UnumFormatDoubleForFields78Result, Errno>
+export UnumFormatDoubleForFields78: (Handle, Float, Int, Handle, Int) ~>[1] Result<UnumFormatDoubleForFields78Result, Errno>
 
 --- Format a decimal number using a UNumberFormat.
 --- The number will be formatted according to the UNumberFormat's locale.
@@ -231,7 +231,7 @@ export UnumFormatDecimal78Result := {
 }
 
 --- ffi:
-export UnumFormatDecimal78: (Handle, String, Int, Int, Int, Int) ~[1]~> Result<UnumFormatDecimal78Result, Errno>
+export UnumFormatDecimal78: (Handle, String, Int, Int, Int, Int) ~>[1] Result<UnumFormatDecimal78Result, Errno>
 
 --- Get a numeric attribute associated with a UNumberFormat.
 --- An example of a numeric attribute is the number of integer digits a formatter will produce.
@@ -254,7 +254,7 @@ export UnumGetAttribute78Result := {
 }
 
 --- ffi:
-export UnumGetAttribute78: (Handle, Int, Int) ~[1]~> Result<UnumGetAttribute78Result, Errno>
+export UnumGetAttribute78: (Handle, Int, Int) ~>[1] Result<UnumGetAttribute78Result, Errno>
 
 --- Set a numeric attribute associated with a UNumberFormat.
 --- An example of a numeric attribute is the number of integer digits a formatter will produce.  If the
@@ -280,7 +280,7 @@ export UnumSetAttribute78Result := {
 }
 
 --- ffi:
-export UnumSetAttribute78: (Handle, Int, Int, Int) ~[1]~> Result<UnumSetAttribute78Result, Errno>
+export UnumSetAttribute78: (Handle, Int, Int, Int) ~>[1] Result<UnumSetAttribute78Result, Errno>
 
 --- Set a text attribute associated with a UNumberFormat.
 --- An example of a text attribute is the suffix for positive numbers.  Rule-based formatters
@@ -302,7 +302,7 @@ export UnumSetTextAttribute78Result := {
 }
 
 --- ffi:
-export UnumSetTextAttribute78: (Handle, Int, Bytes, Int, Int) ~[1]~> Result<UnumSetTextAttribute78Result, Errno>
+export UnumSetTextAttribute78: (Handle, Int, Bytes, Int, Int) ~>[1] Result<UnumSetTextAttribute78Result, Errno>
 
 --- Extract the pattern from a UNumberFormat.  The pattern will follow
 --- the DecimalFormat pattern syntax.
@@ -326,7 +326,7 @@ export UnumToPattern78Result := {
 }
 
 --- ffi:
-export UnumToPattern78: (Handle, Int, Int, Int) ~[1]~> Result<UnumToPattern78Result, Errno>
+export UnumToPattern78: (Handle, Int, Int, Int) ~>[1] Result<UnumToPattern78Result, Errno>
 
 --- Get a symbol associated with a UNumberFormat.
 --- A UNumberFormat uses symbols to represent the special locale-dependent
@@ -350,7 +350,7 @@ export UnumGetSymbol78Result := {
 }
 
 --- ffi:
-export UnumGetSymbol78: (Handle, Int, Int, Int) ~[1]~> Result<UnumGetSymbol78Result, Errno>
+export UnumGetSymbol78: (Handle, Int, Int, Int) ~>[1] Result<UnumGetSymbol78Result, Errno>
 
 --- Set a symbol associated with a UNumberFormat.
 --- A UNumberFormat uses symbols to represent the special locale-dependent
@@ -369,7 +369,7 @@ export UnumSetSymbol78Result := {
 }
 
 --- ffi:
-export UnumSetSymbol78: (Handle, Int, Bytes, Int, Int) ~[1]~> Result<UnumSetSymbol78Result, Errno>
+export UnumSetSymbol78: (Handle, Int, Bytes, Int, Int) ~>[1] Result<UnumSetSymbol78Result, Errno>
 
 --- Get the locale for this number format object.
 --- You can choose between valid and actual locale.
@@ -384,4 +384,4 @@ export UnumGetLocaleByType78Result := {
 }
 
 --- ffi:
-export UnumGetLocaleByType78: (Handle, Int, Int) ~[1]~> Result<UnumGetLocaleByType78Result, Errno>
+export UnumGetLocaleByType78: (Handle, Int, Int) ~>[1] Result<UnumGetLocaleByType78Result, Errno>

@@ -19,13 +19,13 @@ export UldnOpen78Result := {
 }
 
 --- ffi:
-export UldnOpen78: (String, Int, Int) ~[1]~> Result<UldnOpen78Result, Errno>
+export UldnOpen78: (String, Int, Int) ~>[1] Result<UldnOpen78Result, Errno>
 
 --- Closes a ULocaleDisplayNames instance obtained from uldn_open().
 --- ldn: the ULocaleDisplayNames instance to be closed
 --- @stable ICU 4.4
 --- ffi: void (ULocaleDisplayNames *)
-export UldnClose78: (Handle) ~[1]~> Result<(), Errno>
+export UldnClose78: (Handle) ~>[1] Result<(), Errno>
 
 --- Returns the display name of the provided locale.
 --- ldn: the LocaleDisplayNames instance
@@ -44,7 +44,7 @@ export UldnLocaleDisplayName78Result := {
 }
 
 --- ffi:
-export UldnLocaleDisplayName78: (Handle, String, Int, Int) ~[1]~> Result<UldnLocaleDisplayName78Result, Errno>
+export UldnLocaleDisplayName78: (Handle, String, Int, Int) ~>[1] Result<UldnLocaleDisplayName78Result, Errno>
 
 --- Returns the display name of the provided language code.
 --- ldn: the LocaleDisplayNames instance
@@ -63,7 +63,7 @@ export UldnLanguageDisplayName78Result := {
 }
 
 --- ffi:
-export UldnLanguageDisplayName78: (Handle, String, Int, Int) ~[1]~> Result<UldnLanguageDisplayName78Result, Errno>
+export UldnLanguageDisplayName78: (Handle, String, Int, Int) ~>[1] Result<UldnLanguageDisplayName78Result, Errno>
 
 --- Returns the display name of the provided script.
 --- ldn: the LocaleDisplayNames instance
@@ -82,7 +82,7 @@ export UldnScriptDisplayName78Result := {
 }
 
 --- ffi:
-export UldnScriptDisplayName78: (Handle, String, Int, Int) ~[1]~> Result<UldnScriptDisplayName78Result, Errno>
+export UldnScriptDisplayName78: (Handle, String, Int, Int) ~>[1] Result<UldnScriptDisplayName78Result, Errno>
 
 --- Returns the display name of the provided region code.
 --- ldn: the LocaleDisplayNames instance
@@ -101,7 +101,7 @@ export UldnRegionDisplayName78Result := {
 }
 
 --- ffi:
-export UldnRegionDisplayName78: (Handle, String, Int, Int) ~[1]~> Result<UldnRegionDisplayName78Result, Errno>
+export UldnRegionDisplayName78: (Handle, String, Int, Int) ~>[1] Result<UldnRegionDisplayName78Result, Errno>
 
 --- Returns the display name of the provided locale key
 --- ldn: the LocaleDisplayNames instance
@@ -120,7 +120,7 @@ export UldnKeyDisplayName78Result := {
 }
 
 --- ffi:
-export UldnKeyDisplayName78: (Handle, String, Int, Int) ~[1]~> Result<UldnKeyDisplayName78Result, Errno>
+export UldnKeyDisplayName78: (Handle, String, Int, Int) ~>[1] Result<UldnKeyDisplayName78Result, Errno>
 
 --- Returns the display name of the provided value (used with the provided key).
 --- ldn: the LocaleDisplayNames instance
@@ -140,4 +140,4 @@ export UldnKeyValueDisplayName78Result := {
 }
 
 --- ffi:
-export UldnKeyValueDisplayName78: (Handle, String, String, Int, Int) ~[1]~> Result<UldnKeyValueDisplayName78Result, Errno>
+export UldnKeyValueDisplayName78: (Handle, String, String, Int, Int) ~>[1] Result<UldnKeyValueDisplayName78Result, Errno>

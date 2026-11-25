@@ -17,14 +17,14 @@ export UfieldpositerOpen78Result := {
 }
 
 --- ffi:
-export UfieldpositerOpen78: (Int) ~[1]~> Result<UfieldpositerOpen78Result, Errno>
+export UfieldpositerOpen78: (Int) ~>[1] Result<UfieldpositerOpen78Result, Errno>
 
 --- Close a UFieldPositionIterator object. Once closed it may no longer be used.
 --- fpositer:
 --- A pointer to the UFieldPositionIterator object to close.
 --- @stable ICU 55
 --- ffi: void (UFieldPositionIterator *)
-export UfieldpositerClose78: (Handle) ~[1]~> Result<(), Errno>
+export UfieldpositerClose78: (Handle) ~>[1] Result<(), Errno>
 
 --- Get information for the next field in the formatted string to which this
 --- UFieldPositionIterator currently applies, or return a negative value if there
@@ -56,4 +56,4 @@ export UfieldpositerNext78Result := {
 }
 
 --- ffi:
-export UfieldpositerNext78: (Handle, Int, Int) ~[1]~> Result<UfieldpositerNext78Result, Errno>
+export UfieldpositerNext78: (Handle, Int, Int) ~>[1] Result<UfieldpositerNext78Result, Errno>

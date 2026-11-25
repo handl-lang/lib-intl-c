@@ -23,7 +23,7 @@ export UnumfOpenForSkeletonAndLocale78Result := {
 }
 
 --- ffi:
-export UnumfOpenForSkeletonAndLocale78: (Bytes, Int, String, Int) ~[1]~> Result<UnumfOpenForSkeletonAndLocale78Result, Errno>
+export UnumfOpenForSkeletonAndLocale78: (Bytes, Int, String, Int) ~>[1] Result<UnumfOpenForSkeletonAndLocale78Result, Errno>
 
 --- Uses a UNumberFormatter to format a double to a UFormattedNumber. A string, field position, and other
 --- information can be retrieved from the UFormattedNumber.
@@ -41,10 +41,10 @@ export UnumfFormatDouble78Result := {
 }
 
 --- ffi:
-export UnumfFormatDouble78: (Handle, Float, Handle, Int) ~[1]~> Result<UnumfFormatDouble78Result, Errno>
+export UnumfFormatDouble78: (Handle, Float, Handle, Int) ~>[1] Result<UnumfFormatDouble78Result, Errno>
 
 --- Releases the UNumberFormatter created by unumf_openForSkeletonAndLocale().
 --- uformatter: An object created by unumf_openForSkeletonAndLocale().
 --- @stable ICU 62
 --- ffi: void (UNumberFormatter *)
-export UnumfClose78: (Handle) ~[1]~> Result<(), Errno>
+export UnumfClose78: (Handle) ~>[1] Result<(), Errno>

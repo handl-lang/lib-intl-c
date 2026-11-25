@@ -31,4 +31,4 @@ export UStrFoldCase78Result := {
 }
 
 --- ffi:
-export UStrFoldCase78: (Int, Bytes, Int, Int, Int) ~[1]~> Result<UStrFoldCase78Result, Errno>
+export UStrFoldCase78: (Int, Bytes, Int, Int, Int) ~>[1] Result<UStrFoldCase78Result, Errno>

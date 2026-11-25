@@ -32,7 +32,7 @@ export UcolOpen78Result := {
 }
 
 --- ffi:
-export UcolOpen78: (String, Int) ~[1]~> Result<UcolOpen78Result, Errno>
+export UcolOpen78: (String, Int) ~>[1] Result<UcolOpen78Result, Errno>
 
 --- Produce a UCollator instance according to the rules supplied.
 --- The rules are used to change the default ordering, defined in the
@@ -65,7 +65,7 @@ export UcolOpenRules78Result := {
 }
 
 --- ffi:
-export UcolOpenRules78: (Bytes, Int, Int, Int, Int) ~[1]~> Result<UcolOpenRules78Result, Errno>
+export UcolOpenRules78: (Bytes, Int, Int, Int, Int) ~>[1] Result<UcolOpenRules78Result, Errno>
 
 --- Close a UCollator.
 --- Once closed, a UCollator should not be used. Every open collator should
@@ -76,7 +76,7 @@ export UcolOpenRules78: (Bytes, Int, Int, Int, Int) ~[1]~> Result<UcolOpenRules7
 --- See: ucol_clone
 --- @stable ICU 2.0
 --- ffi: void (UCollator *)
-export UcolClose78: (Handle) ~[1]~> Result<(), Errno>
+export UcolClose78: (Handle) ~>[1] Result<(), Errno>
 
 --- Compare two strings.
 --- The strings will be compared using the options already specified.
@@ -92,7 +92,7 @@ export UcolClose78: (Handle) ~[1]~> Result<(), Errno>
 --- See: ucol_equal
 --- @stable ICU 2.0
 --- ffi:
-export UcolStrcoll78: (Handle, Bytes, Int, Bytes, Int) ~[1]~> Result<Int, Errno>
+export UcolStrcoll78: (Handle, Bytes, Int, Bytes, Int) ~>[1] Result<Int, Errno>
 
 --- Compare two strings in UTF-8.
 --- The strings will be compared using the options already specified.
@@ -116,7 +116,7 @@ export UcolStrcollUtf878Result := {
 }
 
 --- ffi:
-export UcolStrcollUtf878: (Handle, Bytes, Bytes, Int) ~[1]~> Result<UcolStrcollUtf878Result, Errno>
+export UcolStrcollUtf878: (Handle, Bytes, Bytes, Int) ~>[1] Result<UcolStrcollUtf878Result, Errno>
 
 --- Determine if one string is greater than another.
 --- This function is equivalent to {@link #ucol_strcoll } == UCOL_GREATER
@@ -131,7 +131,7 @@ export UcolStrcollUtf878: (Handle, Bytes, Bytes, Int) ~[1]~> Result<UcolStrcollU
 --- See: ucol_equal
 --- @stable ICU 2.0
 --- ffi:
-export UcolGreater78: (Handle, Bytes, Int, Bytes, Int) ~[1]~> Result<Int, Errno>
+export UcolGreater78: (Handle, Bytes, Int, Bytes, Int) ~>[1] Result<Int, Errno>
 
 --- Determine if one string is greater than or equal to another.
 --- This function is equivalent to {@link #ucol_strcoll } != UCOL_LESS
@@ -146,7 +146,7 @@ export UcolGreater78: (Handle, Bytes, Int, Bytes, Int) ~[1]~> Result<Int, Errno>
 --- See: ucol_equal
 --- @stable ICU 2.0
 --- ffi:
-export UcolGreaterOrEqual78: (Handle, Bytes, Int, Bytes, Int) ~[1]~> Result<Int, Errno>
+export UcolGreaterOrEqual78: (Handle, Bytes, Int, Bytes, Int) ~>[1] Result<Int, Errno>
 
 --- Compare two strings for equality.
 --- This function is equivalent to {@link #ucol_strcoll } == UCOL_EQUAL
@@ -161,7 +161,7 @@ export UcolGreaterOrEqual78: (Handle, Bytes, Int, Bytes, Int) ~[1]~> Result<Int,
 --- See: ucol_greaterOrEqual
 --- @stable ICU 2.0
 --- ffi:
-export UcolEqual78: (Handle, Bytes, Int, Bytes, Int) ~[1]~> Result<Int, Errno>
+export UcolEqual78: (Handle, Bytes, Int, Bytes, Int) ~>[1] Result<Int, Errno>
 
 --- Get the collation strength used in a UCollator.
 --- The strength influences how strings are compared.
@@ -171,7 +171,7 @@ export UcolEqual78: (Handle, Bytes, Int, Bytes, Int) ~[1]~> Result<Int, Errno>
 --- See: ucol_setStrength
 --- @stable ICU 2.0
 --- ffi: UCollationStrength (const UCollator *)
-export UcolGetStrength78: (Handle) ~[1]~> Result<Int, Errno>
+export UcolGetStrength78: (Handle) ~>[1] Result<Int, Errno>
 
 --- Set the collation strength used in a UCollator.
 --- The strength influences how strings are compared.
@@ -181,7 +181,7 @@ export UcolGetStrength78: (Handle) ~[1]~> Result<Int, Errno>
 --- See: ucol_getStrength
 --- @stable ICU 2.0
 --- ffi: void (UCollator *, UCollationStrength)
-export UcolSetStrength78: (Handle, Int) ~[1]~> Result<(), Errno>
+export UcolSetStrength78: (Handle, Int) ~>[1] Result<(), Errno>
 
 --- Get the display name for a UCollator.
 --- The display name is suitable for presentation to a user.
@@ -201,7 +201,7 @@ export UcolGetDisplayName78Result := {
 }
 
 --- ffi:
-export UcolGetDisplayName78: (String, String, Int, Int) ~[1]~> Result<UcolGetDisplayName78Result, Errno>
+export UcolGetDisplayName78: (String, String, Int, Int) ~>[1] Result<UcolGetDisplayName78Result, Errno>
 
 --- Get a locale for which collation rules are available.
 --- A UCollator in a locale returned by this function will perform the correct
@@ -211,7 +211,7 @@ export UcolGetDisplayName78: (String, String, Int, Int) ~[1]~> Result<UcolGetDis
 --- See: ucol_countAvailable
 --- @stable ICU 2.0
 --- ffi: const char *(int32_t)
-export UcolGetAvailable78: (Int32) ~[1]~> Result<String, Errno>
+export UcolGetAvailable78: (Int32) ~>[1] Result<String, Errno>
 
 --- Determine how many locales have collation rules available.
 --- This function is most useful as determining the loop ending condition for
@@ -220,7 +220,7 @@ export UcolGetAvailable78: (Int32) ~[1]~> Result<String, Errno>
 --- See: ucol_getAvailable
 --- @stable ICU 2.0
 --- ffi: int32_t (void)
-export UcolCountAvailable78: () ~[1]~> Result<Int32, Errno>
+export UcolCountAvailable78: () ~>[1] Result<Int32, Errno>
 
 --- Get a sort key for a string from a UCollator.
 --- Sort keys may be compared using <TT>strcmp</TT>.
@@ -247,7 +247,7 @@ export UcolGetSortKey78Result := {
 }
 
 --- ffi:
-export UcolGetSortKey78: (Handle, Bytes, Int, Int) ~[1]~> Result<UcolGetSortKey78Result, Errno>
+export UcolGetSortKey78: (Handle, Bytes, Int, Int) ~>[1] Result<UcolGetSortKey78Result, Errno>
 
 --- Universal attribute setter
 --- coll: collator which attributes are to be changed
@@ -264,7 +264,7 @@ export UcolSetAttribute78Result := {
 }
 
 --- ffi:
-export UcolSetAttribute78: (Handle, Int, Int, Int) ~[1]~> Result<UcolSetAttribute78Result, Errno>
+export UcolSetAttribute78: (Handle, Int, Int, Int) ~>[1] Result<UcolSetAttribute78Result, Errno>
 
 --- Universal attribute getter
 --- coll: collator which attributes are to be changed
@@ -281,7 +281,7 @@ export UcolGetAttribute78Result := {
 }
 
 --- ffi:
-export UcolGetAttribute78: (Handle, Int, Int) ~[1]~> Result<UcolGetAttribute78Result, Errno>
+export UcolGetAttribute78: (Handle, Int, Int) ~>[1] Result<UcolGetAttribute78Result, Errno>
 
 --- gets the locale name of the collator. If the collator
 --- is instantiated from the rules, then this function returns
@@ -301,4 +301,4 @@ export UcolGetLocaleByType78Result := {
 }
 
 --- ffi:
-export UcolGetLocaleByType78: (Handle, Int, Int) ~[1]~> Result<UcolGetLocaleByType78Result, Errno>
+export UcolGetLocaleByType78: (Handle, Int, Int) ~>[1] Result<UcolGetLocaleByType78Result, Errno>

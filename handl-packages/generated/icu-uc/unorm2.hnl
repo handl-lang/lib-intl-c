@@ -19,7 +19,7 @@ export Unorm2GetNfcInstance78Result := {
 }
 
 --- ffi:
-export Unorm2GetNfcInstance78: (Int) ~[1]~> Result<Unorm2GetNfcInstance78Result, Errno>
+export Unorm2GetNfcInstance78: (Int) ~>[1] Result<Unorm2GetNfcInstance78Result, Errno>
 
 --- Returns a UNormalizer2 instance for Unicode NFD normalization.
 --- Same as unorm2_getInstance(NULL, "nfc", UNORM2_DECOMPOSE, pErrorCode).
@@ -36,7 +36,7 @@ export Unorm2GetNfdInstance78Result := {
 }
 
 --- ffi:
-export Unorm2GetNfdInstance78: (Int) ~[1]~> Result<Unorm2GetNfdInstance78Result, Errno>
+export Unorm2GetNfdInstance78: (Int) ~>[1] Result<Unorm2GetNfdInstance78Result, Errno>
 
 --- Writes the normalized form of the source string to the destination string
 --- (replacing its contents) and returns the length of the destination string.
@@ -60,4 +60,4 @@ export Unorm2Normalize78Result := {
 }
 
 --- ffi:
-export Unorm2Normalize78: (Handle, Bytes, Int, Int, Int) ~[1]~> Result<Unorm2Normalize78Result, Errno>
+export Unorm2Normalize78: (Handle, Bytes, Int, Int, Int) ~>[1] Result<Unorm2Normalize78Result, Errno>

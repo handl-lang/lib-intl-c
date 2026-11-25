@@ -39,14 +39,14 @@ export UreldatefmtOpen78Result := {
 }
 
 --- ffi:
-export UreldatefmtOpen78: (String, Int, Int, Int, Int) ~[1]~> Result<UreldatefmtOpen78Result, Errno>
+export UreldatefmtOpen78: (String, Int, Int, Int, Int) ~>[1] Result<UreldatefmtOpen78Result, Errno>
 
 --- Close a URelativeDateTimeFormatter object. Once closed it may no longer be used.
 --- reldatefmt:
 --- The URelativeDateTimeFormatter object to close.
 --- @stable ICU 57
 --- ffi: void (URelativeDateTimeFormatter *)
-export UreldatefmtClose78: (Handle) ~[1]~> Result<(), Errno>
+export UreldatefmtClose78: (Handle) ~>[1] Result<(), Errno>
 
 --- Format a combination of URelativeDateTimeUnit and numeric
 --- offset using a numeric style, e.g. "1 week ago", "in 1 week",
@@ -81,7 +81,7 @@ export UreldatefmtFormatNumeric78Result := {
 }
 
 --- ffi:
-export UreldatefmtFormatNumeric78: (Handle, Float, Int, Int, Int) ~[1]~> Result<UreldatefmtFormatNumeric78Result, Errno>
+export UreldatefmtFormatNumeric78: (Handle, Float, Int, Int, Int) ~>[1] Result<UreldatefmtFormatNumeric78Result, Errno>
 
 --- Format a combination of URelativeDateTimeUnit and numeric offset
 --- using a text style if possible, e.g. "last week", "this week",
@@ -116,4 +116,4 @@ export UreldatefmtFormat78Result := {
 }
 
 --- ffi:
-export UreldatefmtFormat78: (Handle, Float, Int, Int, Int) ~[1]~> Result<UreldatefmtFormat78Result, Errno>
+export UreldatefmtFormat78: (Handle, Float, Int, Int, Int) ~>[1] Result<UreldatefmtFormat78Result, Errno>

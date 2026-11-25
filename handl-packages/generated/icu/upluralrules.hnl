@@ -17,7 +17,7 @@ export UplrulesOpen78Result := {
 }
 
 --- ffi:
-export UplrulesOpen78: (String, Int) ~[1]~> Result<UplrulesOpen78Result, Errno>
+export UplrulesOpen78: (String, Int) ~>[1] Result<UplrulesOpen78Result, Errno>
 
 --- Opens a new UPluralRules object using the predefined plural rules for a
 --- given locale and the plural type.
@@ -32,13 +32,13 @@ export UplrulesOpenForType78Result := {
 }
 
 --- ffi:
-export UplrulesOpenForType78: (String, Int, Int) ~[1]~> Result<UplrulesOpenForType78Result, Errno>
+export UplrulesOpenForType78: (String, Int, Int) ~>[1] Result<UplrulesOpenForType78Result, Errno>
 
 --- Closes a UPluralRules object. Once closed it may no longer be used.
 --- uplrules: The UPluralRules object to close.
 --- @stable ICU 4.8
 --- ffi: void (UPluralRules *)
-export UplrulesClose78: (Handle) ~[1]~> Result<(), Errno>
+export UplrulesClose78: (Handle) ~>[1] Result<(), Errno>
 
 --- Given a floating-point number, returns the keyword of the first rule that
 --- applies to the number, according to the supplied UPluralRules object.
@@ -58,4 +58,4 @@ export UplrulesSelect78Result := {
 }
 
 --- ffi:
-export UplrulesSelect78: (Handle, Float, Int, Int) ~[1]~> Result<UplrulesSelect78Result, Errno>
+export UplrulesSelect78: (Handle, Float, Int, Int) ~>[1] Result<UplrulesSelect78Result, Errno>

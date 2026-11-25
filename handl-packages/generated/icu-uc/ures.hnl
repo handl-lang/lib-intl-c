@@ -35,7 +35,7 @@ export UresOpen78Result := {
 }
 
 --- ffi:
-export UresOpen78: (Int, String, Int) ~[1]~> Result<UresOpen78Result, Errno>
+export UresOpen78: (Int, String, Int) ~>[1] Result<UresOpen78Result, Errno>
 
 --- This function does not care what kind of localeID is passed in. It simply opens a bundle with
 --- that name. Fallback mechanism is disabled for the new bundle. If the requested bundle contains
@@ -58,7 +58,7 @@ export UresOpenDirect78Result := {
 }
 
 --- ffi:
-export UresOpenDirect78: (Int, String, Int) ~[1]~> Result<UresOpenDirect78Result, Errno>
+export UresOpenDirect78: (Int, String, Int) ~>[1] Result<UresOpenDirect78Result, Errno>
 
 --- Close a resource bundle, all pointers returned from the various ures_getXXX calls
 --- on this particular bundle should be considered invalid henceforth.
@@ -66,7 +66,7 @@ export UresOpenDirect78: (Int, String, Int) ~[1]~> Result<UresOpenDirect78Result
 --- See: ures_open
 --- @stable ICU 2.0
 --- ffi: void (UResourceBundle *)
-export UresClose78: (Handle) ~[1]~> Result<(), Errno>
+export UresClose78: (Handle) ~>[1] Result<(), Errno>
 
 --- Return the name of the Locale associated with this ResourceBundle.
 --- You can choose between requested, valid and real locale.
@@ -83,7 +83,7 @@ export UresGetLocaleByType78Result := {
 }
 
 --- ffi:
-export UresGetLocaleByType78: (Handle, Int, Int) ~[1]~> Result<UresGetLocaleByType78Result, Errno>
+export UresGetLocaleByType78: (Handle, Int, Int) ~>[1] Result<UresGetLocaleByType78Result, Errno>
 
 --- Returns a UTF-8 string from a string resource.
 --- The UTF-8 string may be returnable directly as a pointer, or
@@ -132,7 +132,7 @@ export UresGetUtf8String78Result := {
 }
 
 --- ffi:
-export UresGetUtf8String78: (Handle, Int, Int, Int) ~[1]~> Result<UresGetUtf8String78Result, Errno>
+export UresGetUtf8String78: (Handle, Int, Int, Int) ~>[1] Result<UresGetUtf8String78Result, Errno>
 
 --- Returns a resource in a given resource that has a given key. This procedure works only with table
 --- resources. Features a fill-in parameter.
@@ -149,4 +149,4 @@ export UresGetByKey78Result := {
 }
 
 --- ffi:
-export UresGetByKey78: (Handle, String, Int, Int) ~[1]~> Result<UresGetByKey78Result, Errno>
+export UresGetByKey78: (Handle, String, Int, Int) ~>[1] Result<UresGetByKey78Result, Errno>

@@ -15,7 +15,7 @@ export UnumfOpenResult78Result := {
 }
 
 --- ffi:
-export UnumfOpenResult78: (Int) ~[1]~> Result<UnumfOpenResult78Result, Errno>
+export UnumfOpenResult78: (Int) ~>[1] Result<UnumfOpenResult78Result, Errno>
 
 --- Extracts the result number string out of a UFormattedNumber to a UChar buffer if possible.
 --- If bufferCapacity is greater than the required length, a terminating NUL is written.
@@ -38,10 +38,10 @@ export UnumfResultToString78Result := {
 }
 
 --- ffi:
-export UnumfResultToString78: (Handle, Int, Int) ~[1]~> Result<UnumfResultToString78Result, Errno>
+export UnumfResultToString78: (Handle, Int, Int) ~>[1] Result<UnumfResultToString78Result, Errno>
 
 --- Releases the UFormattedNumber created by unumf_openResult().
 --- uresult: An object created by unumf_openResult().
 --- @stable ICU 62
 --- ffi: void (UFormattedNumber *)
-export UnumfCloseResult78: (Handle) ~[1]~> Result<(), Errno>
+export UnumfCloseResult78: (Handle) ~>[1] Result<(), Errno>
